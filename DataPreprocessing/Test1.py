@@ -33,6 +33,10 @@ class DataProcess:
                     print("空值", data.iloc[i], j, "element：", data.iloc[i][j])
                     continue
                 print(j, ":", str(data.iloc[i][j]))
+                if str(j) == "时间":
+                    # print("格式化后的时间为：", time.strftime("%Y-%m-%d %H:%M:%S", str(data.iloc[i][j]).format()))
+                    timestamp = time.strftime(str(data.iloc[i][j]), "%Y-%m-%d %H:%M:%S")
+                    print("timestamp:", timestamp)
             print()
 
 # ---------------------------------------------------------------------------------------
@@ -50,7 +54,12 @@ class DataProcess:
                     print("空值", data.iloc[i], j, "element：", data.iloc[i][j])
                     continue
                 print(j, ":", str(data.iloc[i][j]))
+                print("type(j):", type(j), ":", j)
+                # 如果是时间字段，对其进行标准化
+                if str(j) == "时间":
+                    print("格式化后的时间为：", time.strftime("%Y-%m-%d %H:%M:%S", str(data.iloc[i][j])))
             print()
+
 # ----------------------------------------------------------------------------------------------------------
 
 
