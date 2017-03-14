@@ -3,6 +3,7 @@
 """
 import time
 import pandas as pd
+import DataPreprocessing.Test4 as t4
 
 
 class DataProcess:
@@ -29,36 +30,31 @@ class DataProcess:
             print("i:", i)
             # print("row: ", data.iloc[i])
             for j in data.columns:
+                j = str(j)
                 if str(data.iloc[i][j]) == "nan":
                     print("空值", data.iloc[i], j, "element：", data.iloc[i][j])
                     continue
-                print(j, ":", str(data.iloc[i][j]))
-                if str(j) == "时间":
-                    # print("格式化后的时间为：", time.strftime("%Y-%m-%d %H:%M:%S", str(data.iloc[i][j]).format()))
-                    timestamp = time.strftime(str(data.iloc[i][j]), "%Y-%m-%d %H:%M:%S")
+                element = str(data.iloc[i][j])
+                print(j, ":", element)
+                if j == "时间":
+                    element = element.replace("Z", "")
+                    print("j':", element)
+                    # 将格式化时间转换成时间戳10位
+                    # 1中间过程，一般都需要将字符串转化为时间数组
+                    timeArray = time.strptime(element, "%Y-%m-%d %H:%M:%S")
+                    # 2将"2011-09-28 10:00:00"转化为时间戳
+                    timestamp = int(time.mktime(timeArray))
                     print("timestamp:", timestamp)
+                if j == "内容":
+                    content = t4.main(element)
+                    print("key words list:", content)
+
             print()
 
 # ---------------------------------------------------------------------------------------
 
-    # 转换成格式化日期
-    def read_file_like(self):
-        data = pd.read_csv(self.file_path, encoding='utf-8')
-        print("data:")
-        # 逐个元素判断是否为空值
-        for i in range(len(data)):
-            print("i:", i)
-            # print("row: ", data.iloc[i])
-            for j in data.columns:
-                if str(data.iloc[i][j]) == "nan":
-                    print("空值", data.iloc[i], j, "element：", data.iloc[i][j])
-                    continue
-                print(j, ":", str(data.iloc[i][j]))
-                print("type(j):", type(j), ":", j)
-                # 如果是时间字段，对其进行标准化
-                if str(j) == "时间":
-                    print("格式化后的时间为：", time.strftime("%Y-%m-%d %H:%M:%S", str(data.iloc[i][j])))
-            print()
+
+
 
 # ----------------------------------------------------------------------------------------------------------
 
