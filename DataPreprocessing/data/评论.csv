@@ -1,0 +1,59 @@
+﻿用户ID,服务ID,时间,行为,评论行为,内容,ask_time,view_times,active_time
+Peter Lawrey,Stack Overflow,2017-03-03 20:58:01Z,reviewed,Approve,Quickest way to read text-file line by line in Java,2011-04-27 06:39:02Z,19432 times,2017-03-03 20:58:01Z
+Peter Lawrey,Stack Overflow,2016-09-04 08:46:51Z,reviewed,Approve,Pretty output always inserts &ldquo;\r\n&rdquo;,2016-09-04 07:55:23Z,39 times,2016-09-04 09:16:15Z
+Peter Lawrey,Stack Overflow,2016-03-27 12:14:50Z,reviewed,Approve,No &ldquo;tryParseDouble&rdquo; in Java?,2012-03-08 14:55:51Z,9432 times,2016-03-27 12:14:50Z
+Peter Lawrey,Stack Overflow,2015-11-28 11:08:25Z,reviewed,Approve,Java - relationship between threads and CPUs,2012-12-13 18:28:33Z,744 times,2015-11-28 11:08:25Z
+Peter Lawrey,Stack Overflow,2014-07-21 22:24:00Z,reviewed,Approve,Integer.parseInt() doesn&#39;t parse large negative numbers,2011-03-30 16:02:52Z,4044 times,2015-06-08 12:59:41Z
+Peter Lawrey,Stack Overflow,2017-02-03 17:35:08Z,reviewed,Approve,Any filter-like lambda operation which does not discard?,2017-02-03 17:02:35Z,69 times,2017-02-06 21:31:33Z
+Peter Lawrey,Stack Overflow,2016-03-23 09:39:36Z,reviewed,Approve,UFT -selecting a link on the Java tree,2016-03-23 09:36:08Z,295 times,2016-12-23 15:50:19Z
+Peter Lawrey,Stack Overflow,2016-07-31 22:02:46Z,reviewed,Approve,Java: How do i put the name of a variable into a string?,2015-03-02 18:58:59Z,154 times,2016-07-31 22:22:26Z
+Peter Lawrey,Stack Overflow,2016-03-14 17:39:22Z,reviewed,Approve,DatagramPacket - does Java frag and rearrange it first?,2016-03-14 16:56:51Z,39 times,2016-03-14 23:15:47Z
+Peter Lawrey,Stack Overflow,2016-07-31 22:02:33Z,reviewed,Approve,Java Class that implements Map and keeps insertion order?,2009-03-25 21:22:04Z,151006 times,2016-11-03 20:25:38Z
+Peter Lawrey,Stack Overflow,2013-11-12 20:22:31Z,reviewed,Approve,"Quickly search class members (const ints, const string etc)",2013-11-12 20:19:48Z,56 times,2013-11-12 21:58:58Z
+Peter Lawrey,Stack Overflow,2015-08-19 09:14:12Z,reviewed,Reject,How to execute a java program without main method in java 1.7 . I know it works in other releases but i want in 1.7,2015-08-19 08:53:21Z,79 times,2015-08-19 09:14:38Z
+Peter Lawrey,Stack Overflow,2016-07-03 07:05:10Z,reviewed,Approve,Best way to store a huge list of Objects to disk in java,2013-09-27 22:06:12Z,3797 times,2016-07-03 07:05:10Z
+Peter Lawrey,Stack Overflow,2013-11-11 03:10:11Z,reviewed,Approve,Keep Getting java.lang.ArrayIndexOutOfBoundsException and Cannot Determine Why,2013-11-11 03:00:14Z,200 times,2013-11-11 03:10:11Z
+Peter Lawrey,Stack Overflow,2015-08-18 06:01:48Z,reviewed,Approve,How can I make a method take a null value?,2015-08-18 05:04:36Z,491 times,2015-08-18 06:01:48Z
+Peter Lawrey,Stack Overflow,2016-12-23 15:40:14Z,reviewed,Reject and Edit,chronicle tag wiki,,,
+Peter Lawrey,Stack Overflow,2013-10-20 14:25:29Z,reviewed,Reject,"Java homework help, Error &lt;identifier&gt; expected",2013-10-20 14:17:51Z,477 times,2013-10-20 15:51:19Z
+Peter Lawrey,Stack Overflow,2016-06-28 07:21:29Z,reviewed,Approve,How do i add % and per minute function with javascript,2016-06-28 07:17:35Z,38 times,2016-06-28 07:31:38Z
+Peter Lawrey,Stack Overflow,2016-02-29 10:52:31Z,reviewed,Approve,Get return value of dwr function within the located function,2016-02-29 10:44:47Z,153 times,2016-03-18 05:37:15Z
+Peter Lawrey,Stack Overflow,2016-10-20 12:05:20Z,reviewed,Approve,Supplying a BiConsumer without a previous Collectors.toMap,2016-10-20 11:42:18Z,56 times,2016-10-20 13:45:14Z
+Peter Lawrey,Stack Overflow,2013-10-06 08:34:12Z,reviewed,Approve,How do I mimic the class oriented approach of Java/C++ in C?,2013-10-06 08:25:01Z,400 times,2013-10-06 09:14:58Z
+Peter Lawrey,Stack Overflow,2016-02-24 12:53:45Z,reviewed,Approve,Is there a low-level difference between int[large][small] or int[small][large] in Java?,2016-02-23 11:30:59Z,1970 times,2016-03-19 17:58:53Z
+Peter Lawrey,Stack Overflow,2016-10-17 16:53:07Z,reviewed,Approve,Adding elements to Java 8 parallel Streams on-the-fly,2016-10-17 11:37:15Z,200 times,2016-10-17 16:53:07Z
+Peter Lawrey,Stack Overflow,2015-02-04 13:09:07Z,reviewed,Approve,regex tag wiki,,,
+Peter Lawrey,Stack Overflow,2016-02-23 13:55:32Z,reviewed,Approve,Disabling all interrupts,2016-02-23 13:39:42Z,69 times,2016-02-23 13:55:32Z
+Peter Lawrey,Stack Overflow,2016-10-17 11:05:54Z,reviewed,Approve,operators in java: Can anyone explain to me output of the following java code,2016-10-17 10:57:24Z,50 times,2016-10-17 12:11:19Z
+Peter Lawrey,Stack Overflow,2015-02-04 13:08:36Z,reviewed,Approve,Java Simple Lottery Program,2015-02-04 12:44:40Z,10404 times,2016-05-18 13:30:21Z
+Peter Lawrey,Stack Overflow,2016-02-22 12:35:00Z,reviewed,Approve,Initialization On Demand Holder idiom,2016-02-22 10:34:31Z,101 times,2016-02-22 12:35:00Z
+Peter Lawrey,Stack Overflow,2015-01-27 20:38:59Z,reviewed,Approve,Java load factor tradeoffs,2015-01-27 20:34:33Z,59 times,2015-01-27 21:21:25Z
+Peter Lawrey,Stack Overflow,2016-04-22 12:14:13Z,reviewed,Approve,Check if string contains word (not substring!),2016-04-22 12:05:06Z,177 times,2016-04-22 12:16:46Z
+Peter Lawrey,Stack Overflow,2016-02-08 05:09:46Z,reviewed,Approve,How to scan &#39;:&#39; delimitted integer inputs in java?,2016-02-08 05:07:12Z,46 times,2016-02-08 05:45:14Z
+Peter Lawrey,Stack Overflow,2016-10-16 14:38:16Z,reviewed,Approve,display results from array of objects,2016-10-16 14:12:06Z,45 times,2016-10-16 14:53:59Z
+Peter Lawrey,Stack Overflow,2012-12-30 15:11:25Z,reviewed,Approve,Incompatible type with Arrays.asList(),2012-12-30 15:03:46Z,5353 times,2012-12-31 12:18:59Z
+Peter Lawrey,Stack Overflow,2015-01-20 10:36:36Z,reviewed,Approve,Java Memory usage continuously growing till OutOfMemory Exception,2015-01-20 10:30:14Z,129 times,2015-01-20 10:36:36Z
+Peter Lawrey,Stack Overflow,2016-09-30 09:14:31Z,reviewed,Approve,How to allow internationals words in a string,2016-09-30 09:08:20Z,34 times,2016-09-30 10:10:32Z
+Peter Lawrey,Stack Overflow,2016-01-01 08:40:04Z,reviewed,Approve,Want to define state-sequence of processes in the property file in Java,2016-01-01 08:24:14Z,25 times,2016-01-01 08:41:11Z
+Peter Lawrey,Stack Overflow,2014-12-26 20:41:14Z,reviewed,Approve,Writing to a file using Serialization (using writeObject method) in Java,2014-12-26 20:17:16Z,129 times,2014-12-26 20:41:55Z
+Peter Lawrey,Stack Overflow,2016-09-17 17:02:00Z,reviewed,Approve,unable to change image in a div through javascript,2016-09-17 17:00:18Z,38 times,2016-09-17 17:13:03Z
+Peter Lawrey,Stack Overflow,2016-04-21 18:33:14Z,reviewed,Approve,calculate average of ArrayList&lt;Float[]&gt; type that returns Float[] in java,2016-04-21 18:27:20Z,57 times,2016-04-22 07:52:47Z
+Peter Lawrey,Stack Overflow,2015-12-03 11:16:57Z,reviewed,Approve,In ascending order i need to print Blanks in last and letters or numbers first,2015-12-03 11:12:21Z,32 times,2015-12-03 11:42:18Z
+Peter Lawrey,Stack Overflow,2016-09-10 09:27:25Z,reviewed,Approve,Program that arranges four 4-bit binary numbers,2016-09-10 09:24:43Z,60 times,2016-09-10 19:28:33Z
+Peter Lawrey,Stack Overflow,2016-04-16 15:52:37Z,reviewed,Approve,"How to pass an (a,b) function to a method and use it?",2016-04-16 15:37:36Z,64 times,2016-04-16 16:23:36Z
+Peter Lawrey,Stack Overflow,2014-12-13 13:50:05Z,reviewed,Approve,"Java:Runtime.getRuntime().exec(cmd) error with some commands,but works with other command",2014-12-13 13:45:06Z,206 times,2014-12-14 10:40:57Z
+Peter Lawrey,Stack Overflow,2012-11-19 11:20:28Z,reviewed,Approve,Byte incrementing operation in Java,2012-11-19 11:17:26Z,4151 times,2012-11-20 10:00:50Z
+Peter Lawrey,Stack Overflow,2016-04-15 13:13:37Z,reviewed,Approve,How to get exec/fetch time of a JDBC query?,2012-08-31 12:39:03Z,2805 times,2016-04-15 13:13:37Z
+Peter Lawrey,Stack Overflow,2014-09-24 21:36:34Z,reviewed,Approve,Pointing to a private method in Java?,2014-09-24 21:28:09Z,67 times,2014-09-24 21:41:53Z
+Peter Lawrey,Stack Overflow,2016-04-12 07:11:21Z,reviewed,Edit,How to disable clear functionality of Java List,2016-04-12 07:03:14Z,124 times,2016-04-23 10:23:31Z
+Peter Lawrey,Stack Overflow,2012-08-29 13:10:56Z,reviewed,Approve,How to make ScheduledThreadPool report errors?,2012-08-29 10:34:10Z,1283 times,2013-04-07 06:59:56Z
+Peter Lawrey,Stack Overflow,2012-07-10 10:16:42Z,reviewed,Approve,Why cannot run() of Runnable throw checked Exceptions?,2012-07-10 09:08:15Z,10762 times,2015-02-11 05:28:14Z
+Peter Lawrey,Stack Overflow,2012-05-02 16:04:47Z,reviewed,Approve,how to implement hash function `h(k) = (A&#183;k mod 2^w) &gt;&gt; (w – r)` in Java,2012-05-02 15:11:35Z,927 times,2012-05-02 22:21:09Z
+Peter Lawrey,Stack Overflow,2012-01-12 08:01:31Z,reviewed,Approve,Moving decimal places over in a double,2011-02-08 19:29:25Z,75094 times,2016-06-08 13:14:54Z
+Peter Lawrey,Stack Overflow,2011-07-13 07:47:39Z,reviewed,Approve,Missing Return Statement,2011-07-13 07:43:46Z,888 times,2011-07-13 08:23:56Z
+Peter Lawrey,Stack Overflow,2011-06-07 09:09:30Z,reviewed,Approve,How to find the duplicate entries of an array of string and make them null by using HashMap,2011-06-07 08:34:10Z,4756 times,2011-06-07 09:09:30Z
+Peter Lawrey,Stack Overflow,2011-05-26 08:37:40Z,reviewed,Approve,Reading integer values from binary file using Java,2011-05-26 08:26:25Z,8431 times,2016-04-10 13:45:27Z
+Peter Lawrey,Stack Overflow,2011-05-08 10:04:54Z,reviewed,Approve,correct way to check if nullable has a value,2011-05-08 07:23:26Z,3050 times,2011-05-08 10:04:54Z
+Peter Lawrey,Stack Overflow,2011-05-08 10:04:41Z,reviewed,Approve,How to deserialize XML file and then serialize again adding new item to this file?,2011-05-08 09:14:01Z,803 times,2011-05-08 10:10:40Z
+Peter Lawrey,Stack Overflow,2011-05-08 10:04:15Z,reviewed,Approve,amazon-sns tag wiki excerpt,,,
+Peter Lawrey,Stack Overflow,2011-05-08 10:04:11Z,reviewed,Approve,amazon-sns tag wiki,,,
