@@ -3,7 +3,7 @@
 """
 import time
 import pandas as pd
-import DataPreprocessing.Test4 as dpt4
+import DataPreprocessing.NaturalLanProcess as dpt4  # 引入自然语言处理
 import pymongo
 
 
@@ -35,7 +35,7 @@ class DataProcess:
 
     # 读取文本中每行的节点队
     def read_file(self):
-        data = pd.read_csv(self.file_path, encoding='utf-8')
+        data = pd.read_csv(self.file_path, encoding='utf-8')  # 读取数据
         print("data:")
         # 逐个元素判断是否为空值,将空值行，放入一个队列中
         for i in range(len(data)):
@@ -49,7 +49,7 @@ class DataProcess:
             key_words = []  # 内容关键词（自然语言做的分词）
             title_text = ""  # 标题
             star_badge = ""  # 奖励
-            row = data.iloc[i]
+            row = data.iloc[i]  # 数据元组
             # print("type:", type(row), "row: ", row)
             for j in data.columns:
                 j = str(j)
@@ -70,6 +70,7 @@ class DataProcess:
                         self.nan_list.append(row)
                         continue
                     element = element.replace("Z", "")
+                    element = element.replace("T", " ")
                     date_time = element
                     print(j, ":", date_time)
                     # 将格式化时间转换成时间戳10位
@@ -98,6 +99,7 @@ class DataProcess:
                     star_badge = element
                     print(j, ":", star_badge)
                 # end if
+                # 调用Switch结构
             # 输出每一行的input_list
             insert_text = {"uid": self.collection_name, "用户ID": user_id,
                            "服务ID": service_id, "时间": date_time,
@@ -105,7 +107,7 @@ class DataProcess:
                            "keywords": key_words, "title": title_text, "标记": star_badge}
             print("row_input_list:", insert_text)
             # 插入数据库
-            self.input_database(insert_text)
+            # self.input_database(insert_text)
             print()
         # end for, 判断是不是有空值的元组
         if self.nan_list:
@@ -115,6 +117,8 @@ class DataProcess:
 
 # ---------------------------------------------------------------------------------------
 
+
+# ---------------------------------------------------------------------------------------
     """
     数据库操作
     """
@@ -163,9 +167,60 @@ class DataProcess:
 # ----------------------------------------------------------------------------------------------------------
 
 
+"""
+switch功能
+"""
+
+
+class Switch(object):
+    def __init__(self, value):
+        self.value = value
+        self.fall = False
+
+    def __iter__(self):
+        """Return the match method once, then stop"""
+        yield self.match
+        raise StopIteration
+
+    def match(self, *args):
+        """Indicate whether or not to enter a case suite"""
+        if self.fall or not args:
+            return True
+        elif self.value in args:  # changed for
+            self.fall = True
+            return True
+        else:
+            return False
+
+
+# The following example is pretty much the exact use-case of a dictionary,
+# but is included for its simplicity. Note that you can include statements
+# in each suite.
+
+v = 'ten3'
+for case in Switch(v):
+    if case('one'):
+        print("1")
+        break
+    if case('two'):
+        print("2")
+        break
+    if case('ten'):
+        print('10')
+        break
+    if case('eleven'):
+        print("11")
+        break
+    if case():  # default, could also just omit condition or 'if True'
+        print("something else!")
+        # No need to break here, it'll stop anyway
+
+# ----------------------------------------------------------------------------------------------------------
+
+
 def main_operation():
     """Part1: 初始化参数"""
-    file_path = 'data/校订.csv'  # 读取文件路径和文件名
+    file_path = 'data/标星.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
     collection_name = "U01"  # 集合的名字
