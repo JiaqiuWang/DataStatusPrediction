@@ -5,6 +5,8 @@ import time
 import pandas as pd
 import DataPreprocessing.NaturalLanProcess as dpt4  # 引入自然语言处理
 import pymongo
+from datetime import datetime
+import datetime
 
 
 class DataProcess:
@@ -25,7 +27,6 @@ class DataProcess:
         self.db = self.client.get_database(self.db_name)
         # 获取集合
         self.collection = self.db.get_collection(self.collection_name)
-        # 是否插入数据库标识位
         self.flag_insert = flag_insert
 
     # 析构函数
@@ -73,14 +74,43 @@ class DataProcess:
                         self.nan_list.append(row)
                         continue
                     element = element.replace("Z", "")
+                    element = element.replace("T", " ")
                     date_time = element
                     print(j, ":", date_time)
                     # 将格式化时间转换成时间戳10位
                     # 1中间过程，一般都需要将字符串转化为时间数组
-                    timeArray = time.strptime(element, "%Y-%m-%d %H:%M:%S")
+                    element = element.replace(" GM ", "")
+                    element = element.replace("Mon, ", "")
+                    element = element.replace("Tue, ", "")
+                    element = element.replace(" ue, ", "")
+                    element = element.replace("Wed, ", "")
+                    element = element.replace("Thu, ", "")
+                    element = element.replace(" hu, ", "")
+                    element = element.replace("Fri, ", "")
+                    element = element.replace("Sat, ", "")
+                    element = element.replace("Sun, ", "")
+                    element = element.replace("Jan", "01")
+                    element = element.replace("Feb", "02")
+                    element = element.replace("Mar", "03")
+                    element = element.replace("Apr", "04")
+                    element = element.replace("May", "05")
+                    element = element.replace("Jun", "06")
+                    element = element.replace("Jul", "07")
+                    element = element.replace("Aug", "08")
+                    element = element.replace("Sep", "09")
+                    element = element.replace("Oct", "10")
+                    element = element.replace("Nov", "11")
+                    element = element.replace("Dec", "12")
+                    print("new element:", element)
+                    # 格式化的字符串转换成Datetime
+                    dt = datetime.datetime.strptime(element, "%d %m %Y %H:%M:%S")
+                    date_time = str(dt)
+                    print("时间：", date_time)
+                    # 转化成时间戳
+                    timeArray = time.strptime(date_time, "%Y-%m-%d %H:%M:%S")
                     # 2将"2011-09-28 10:00:00"转化为时间戳
                     timestamp = int(time.mktime(timeArray))
-                    print("timestamp:", timestamp, " type:", type(timestamp))
+                    print("timestamp:", timestamp)
                     time_stamp = timestamp
                 if j == "行为":
                     activity = element
@@ -90,26 +120,29 @@ class DataProcess:
                     print(j, ":", content)
                     temp_keywords = dpt4.main(element)   # keywords是一个List结构
                     print("keywords:", temp_keywords)
-                    key_words += temp_keywords
+                    key_words = key_words + temp_keywords
                 if j == "title":
                     title_text = element
                     print(j, ":", title_text)
                     temp_keywords = dpt4.main(title_text)  # keywords是一个List结构
                     print("keywords:", temp_keywords)
-                    key_words += temp_keywords
+                    key_words = key_words + temp_keywords
                 if j == "标记":
                     star_badge = element
                     print(j, ":", star_badge)
-                    temp_keywords = dpt4.main(star_badge)  # keywords是一个List结构
+                if j == "repository":
+                    content = element
+                    print(j, ":", content)
+                    temp_keywords = dpt4.main(element)  # keywords是一个List结构
                     print("keywords:", temp_keywords)
-                    key_words += temp_keywords
+                    key_words = key_words + temp_keywords
                 # end if
                 # 调用Switch结构
             # 输出每一行的input_list
             insert_text = {"uid": self.collection_name, "用户ID": user_id,
                            "服务ID": service_id, "时间": date_time,
                            "timestamp": time_stamp, "activity": activity, "内容": content,
-                           "keywords": key_words, "title": title_text, "标记": star_badge}
+                           "keywords": key_words}
             print("row_input_list:", insert_text)
             # 插入数据库
             if self.flag_insert == "1":
@@ -123,8 +156,6 @@ class DataProcess:
 
 # ---------------------------------------------------------------------------------------
 
-
-# ---------------------------------------------------------------------------------------
     """
     数据库操作
     """
@@ -223,16 +254,10 @@ for case in Switch(v):
 
 # ----------------------------------------------------------------------------------------------------------
 
-"""
-
-注意修改：UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID
-
-"""
-
 
 def main_operation():
     """Part1: 初始化参数"""
-    file_path = 'data/评论.csv'  # 读取文件路径和文件名
+    file_path = 'data/创建提交.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
     collection_name = "U03"  # 集合的名字

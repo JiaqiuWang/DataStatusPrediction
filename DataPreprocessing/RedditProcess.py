@@ -5,6 +5,9 @@ import time
 import pandas as pd
 import DataPreprocessing.NaturalLanProcess as dpt4  # 引入自然语言处理
 import pymongo
+from datetime import datetime
+from datetime import timedelta
+import datetime
 
 
 class DataProcess:
@@ -13,8 +16,7 @@ class DataProcess:
     nan_list = []  # 存放空值行的队列
 
     # 构造函数
-    def __init__(self, file_path, db_name, collection_name, ip_address,
-                 flag_insert):
+    def __init__(self, file_path, db_name, collection_name, ip_address):
         self.file_path = file_path
         self.db_name = db_name
         self.collection_name = collection_name
@@ -25,8 +27,6 @@ class DataProcess:
         self.db = self.client.get_database(self.db_name)
         # 获取集合
         self.collection = self.db.get_collection(self.collection_name)
-        # 是否插入数据库标识位
-        self.flag_insert = flag_insert
 
     # 析构函数
     def __del__(self):
@@ -47,11 +47,9 @@ class DataProcess:
             service_id = ""  # 服务ID
             date_time = ""  # 格式化时间
             time_stamp = ""  # 时间戳
-            activity = ""  # 行为
+            temp_time = ""  # 临时时间
             content = ""  # 内容
             key_words = []  # 内容关键词（自然语言做的分词）
-            title_text = ""  # 标题
-            star_badge = ""  # 奖励
             row = data.iloc[i]  # 数据元组
             # print("type:", type(row), "row: ", row)
             for j in data.columns:
@@ -61,59 +59,77 @@ class DataProcess:
                 #     self.nan_list.append(row)
                 #     continue
                 element = str(data.iloc[i][j])
-                if j == "用户ID":
-                    user_id = element
-                    print(j, ":", user_id)
-                if j == "服务ID":
-                    service_id = element
-                    print(j, ":", service_id)
+                if j == "ATT":
+                    con_list = element.split(",")
+                    for item in range(len(con_list)):
+                        print("item:", item, "element:", con_list[item])
+                        if item == 0:
+                            user_id = con_list[item]
+                        if item == 1:
+                            service_id = con_list[item]
+                        if item == 2:
+                            content = con_list[item]
+                            temp_keywords = dpt4.main(content)  # keywords是一个List结构
+                            print("keywords:", temp_keywords)
+                            key_words = key_words + temp_keywords
+                        if item == 3:
+                            temp_time = con_list[item]
+                            temp_time = temp_time.replace("T", " ")
+                            element = temp_time.replace("+00:00", "")
+                            # 格式化的字符串转换成Datetime
+                            dt = datetime.datetime.strptime(element, "%Y-%m-%d %H:%M:%S")
+                            date_time = str(dt)
+                            print("时间：", date_time)
+                            # 转化成时间戳
+                            timeArray = time.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+                            # 2将"2011-09-28 10:00:00"转化为时间戳
+                            timestamp = int(time.mktime(timeArray))
+                            print("timestamp:", timestamp)
+                            time_stamp = timestamp
                 if j == "时间":
                     if str(data.iloc[i][j]) == "nan":
                         # print("空值", row, j, "element：", data.iloc[i][j])
                         self.nan_list.append(row)
                         continue
-                    element = element.replace("Z", "")
-                    date_time = element
-                    print(j, ":", date_time)
-                    # 将格式化时间转换成时间戳10位
-                    # 1中间过程，一般都需要将字符串转化为时间数组
-                    timeArray = time.strptime(element, "%Y-%m-%d %H:%M:%S")
-                    # 2将"2011-09-28 10:00:00"转化为时间戳
-                    timestamp = int(time.mktime(timeArray))
-                    print("timestamp:", timestamp, " type:", type(timestamp))
-                    time_stamp = timestamp
-                if j == "行为":
-                    activity = element
-                    print(j, ":", activity)
-                if j == "内容":
-                    content = element
-                    print(j, ":", content)
-                    temp_keywords = dpt4.main(element)   # keywords是一个List结构
-                    print("keywords:", temp_keywords)
-                    key_words += temp_keywords
-                if j == "title":
-                    title_text = element
-                    print(j, ":", title_text)
-                    temp_keywords = dpt4.main(title_text)  # keywords是一个List结构
-                    print("keywords:", temp_keywords)
-                    key_words += temp_keywords
-                if j == "标记":
-                    star_badge = element
-                    print(j, ":", star_badge)
-                    temp_keywords = dpt4.main(star_badge)  # keywords是一个List结构
-                    print("keywords:", temp_keywords)
-                    key_words += temp_keywords
+                    print(j, ":", element)
+                    if "上午" in element:
+                        element = element.replace("上午", "")
+                        # 格式化的字符串转换成Datetime
+                        dt = datetime.datetime.strptime(element, "%H:%M - %Y年%m月%d日")
+                        date_time = str(dt)
+                        print("时间：", date_time)
+                        # 转化成时间戳
+                        timeArray = time.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+                        # 2将"2011-09-28 10:00:00"转化为时间戳
+                        timestamp = int(time.mktime(timeArray))
+                        print("timestamp:", timestamp)
+                        time_stamp = timestamp
+                    if "下午" in element:
+                        element = element.replace("下午", "")
+                        # 格式化的字符串转换成Datetime
+                        dt = datetime.datetime.strptime(element, "%H:%M - %Y年%m月%d日")
+                        print("dt:", dt)
+                        # 加上12小时
+                        aDay = timedelta(days=0.5)
+                        now = dt + aDay
+                        print("new now:", now)
+                        element = str(now)
+                        # 再变成时间戳
+                        timeArray = time.strptime(element, "%Y-%m-%d %H:%M:%S")
+                        # 2将"2011-09-28 10:00:00"转化为时间戳
+                        timestamp = int(time.mktime(timeArray))
+                        print("timestamp:", timestamp)
+                        time_stamp = timestamp
                 # end if
                 # 调用Switch结构
             # 输出每一行的input_list
             insert_text = {"uid": self.collection_name, "用户ID": user_id,
                            "服务ID": service_id, "时间": date_time,
-                           "timestamp": time_stamp, "activity": activity, "内容": content,
-                           "keywords": key_words, "title": title_text, "标记": star_badge}
+                           "timestamp": time_stamp, "内容": content,
+                           "keywords": key_words}
             print("row_input_list:", insert_text)
             # 插入数据库
-            if self.flag_insert == "1":
-                self.input_database(insert_text)
+            self.input_database(insert_text)
             print()
         # end for, 判断是不是有空值的元组
         if self.nan_list:
@@ -123,8 +139,6 @@ class DataProcess:
 
 # ---------------------------------------------------------------------------------------
 
-
-# ---------------------------------------------------------------------------------------
     """
     数据库操作
     """
@@ -223,22 +237,14 @@ for case in Switch(v):
 
 # ----------------------------------------------------------------------------------------------------------
 
-"""
-
-注意修改：UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID UID
-
-"""
-
 
 def main_operation():
     """Part1: 初始化参数"""
-    file_path = 'data/评论.csv'  # 读取文件路径和文件名
+    file_path = 'data/ReDDiT2.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U03"  # 集合的名字
-    flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
-    dp1 = DataProcess(file_path, db_name, collection_name,
-                      ip_address, flag_insert)
+    collection_name = "U02"  # 集合的名字
+    dp1 = DataProcess(file_path, db_name, collection_name, ip_address)
     dp1.read_file()
 
 if __name__ == "__main__":
@@ -249,5 +255,6 @@ if __name__ == "__main__":
     # 记录算法运行结束时间
     end_time = time.clock()
     print("Running time: %s Seconds" % (end_time - start_time))  # 输出运行时间(包括最后输出所有结果)
+
 
 

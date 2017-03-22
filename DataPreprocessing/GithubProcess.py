@@ -13,7 +13,8 @@ class DataProcess:
     nan_list = []  # 存放空值行的队列
 
     # 构造函数
-    def __init__(self, file_path, db_name, collection_name, ip_address):
+    def __init__(self, file_path, db_name, collection_name, ip_address,
+                 flag_insert):
         self.file_path = file_path
         self.db_name = db_name
         self.collection_name = collection_name
@@ -24,6 +25,7 @@ class DataProcess:
         self.db = self.client.get_database(self.db_name)
         # 获取集合
         self.collection = self.db.get_collection(self.collection_name)
+        self.flag_insert = flag_insert
 
     # 析构函数
     def __del__(self):
@@ -75,7 +77,18 @@ class DataProcess:
                     print(j, ":", date_time)
                     # 将格式化时间转换成时间戳10位
                     # 1中间过程，一般都需要将字符串转化为时间数组
-                    timeArray = time.strptime(element, "%Y-%m-%d %H:%M:%S")
+                    try:
+                        timeArray = time.strptime(element, "%Y-%m-%d %H:%M:%S")
+                    except ValueError:
+                        element = element.replace(" GM", "")
+                        element = element.replace("Mon, ", "")
+                        element = element.replace("Tue, ", "")
+                        element = element.replace("Wed, ", "")
+                        element = element.replace("Thu, ", "")
+                        element = element.replace("Fri, ", "")
+                        element = element.replace("Sat, ", "")
+                        element = element.replace("Sun, ", "")
+                        timeArray = time.strptime(element, "%Y-%m-%d")
                     # 2将"2011-09-28 10:00:00"转化为时间戳
                     timestamp = int(time.mktime(timeArray))
                     print("timestamp:", timestamp, " type:", type(timestamp))
@@ -98,16 +111,23 @@ class DataProcess:
                 if j == "标记":
                     star_badge = element
                     print(j, ":", star_badge)
+                if j == "repository":
+                    content = element
+                    print(j, ":", content)
+                    temp_keywords = dpt4.main(element)  # keywords是一个List结构
+                    print("keywords:", temp_keywords)
+                    key_words = key_words + temp_keywords
                 # end if
                 # 调用Switch结构
             # 输出每一行的input_list
             insert_text = {"uid": self.collection_name, "用户ID": user_id,
                            "服务ID": service_id, "时间": date_time,
                            "timestamp": time_stamp, "activity": activity, "内容": content,
-                           "keywords": key_words, "title": title_text, "标记": star_badge}
+                           "keywords": key_words}
             print("row_input_list:", insert_text)
             # 插入数据库
-            # self.input_database(insert_text)
+            if self.flag_insert == "1":
+                self.input_database(insert_text)
             print()
         # end for, 判断是不是有空值的元组
         if self.nan_list:
@@ -117,8 +137,6 @@ class DataProcess:
 
 # ---------------------------------------------------------------------------------------
 
-
-# ---------------------------------------------------------------------------------------
     """
     数据库操作
     """
@@ -223,8 +241,10 @@ def main_operation():
     file_path = 'data/标星.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U01"  # 集合的名字
-    dp1 = DataProcess(file_path, db_name, collection_name, ip_address)
+    collection_name = "U03"  # 集合的名字
+    flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
+    dp1 = DataProcess(file_path, db_name, collection_name,
+                      ip_address, flag_insert)
     dp1.read_file()
 
 if __name__ == "__main__":
