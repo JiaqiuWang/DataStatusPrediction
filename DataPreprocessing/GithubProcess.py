@@ -120,10 +120,11 @@ class DataProcess:
                 # end if
                 # 调用Switch结构
             # 输出每一行的input_list
+            _id = self.get_next_counter()
             insert_text = {"uid": self.collection_name, "用户ID": user_id,
                            "服务ID": service_id, "时间": date_time,
                            "timestamp": time_stamp, "activity": activity, "内容": content,
-                           "keywords": key_words}
+                           "keywords": key_words, "_id": _id}
             print("row_input_list:", insert_text)
             # 插入数据库
             if self.flag_insert == "1":
@@ -184,6 +185,23 @@ class DataProcess:
 
 # ----------------------------------------------------------------------------------------------------------
 
+    """
+    获取自增1的_id,默认与初始参数相同的数据库
+    """
+    def get_next_counter(self):
+        collection = self.db.get_collection("counters")
+        _id_obj = collection.find_and_modify(query={'_id': self.collection_name},
+                                             update={"$inc": {"no": +1}},
+                                             upsert=False,
+                                             full_response=True, new=True
+                                             )
+        # print("_id_obj:", _id_obj)
+        _id = _id_obj.get("value").get("no")
+        # print("_id:", _id)
+        return _id
+
+# ----------------------------------------------------------------------------------------------------------
+
 
 """
 switch功能
@@ -238,10 +256,10 @@ for case in Switch(v):
 
 def main_operation():
     """Part1: 初始化参数"""
-    file_path = 'data/标星.csv'  # 读取文件路径和文件名
+    file_path = 'data/提问题.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U03"  # 集合的名字
+    collection_name = "U04"  # 集合的名字
     flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
     dp1 = DataProcess(file_path, db_name, collection_name,
                       ip_address, flag_insert)

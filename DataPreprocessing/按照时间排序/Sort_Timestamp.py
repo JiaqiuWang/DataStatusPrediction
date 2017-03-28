@@ -47,38 +47,18 @@ class SortTimestamp:
 
 # ---------------------------------------------------------------------------------------
 
-    # 批量插入数据
+    """
+            单个写入文本的方法
+            """
     @classmethod
-    def format_datetime(cls, element):
-        element = element.replace("January", "01")
-        element = element.replace("February", "02")
-        element = element.replace("March", "03")
-        element = element.replace("April", "04")
-        element = element.replace("May", "05")
-        element = element.replace("June", "06")
-        element = element.replace("July", "07")
-        element = element.replace("August", "08")
-        element = element.replace("September", "09")
-        element = element.replace("October", "10")
-        element = element.replace("November", "11")
-        element = element.replace("December", "12")
-        element = element.replace("Jan", "01")
-        element = element.replace("Feb", "02")
-        element = element.replace("Mar", "03")
-        element = element.replace("Apr", "04")
-        element = element.replace("May", "05")
-        element = element.replace("Jun", "06")
-        element = element.replace("Jul", "07")
-        element = element.replace("Aug", "08")
-        element = element.replace("Sep", "09")
-        element = element.replace("Oct", "10")
-        element = element.replace("Nov", "11")
-        element = element.replace("Dec", "12")
-        print("new element:", element)
-        # 格式化的字符串转换成Datetime, 具体看字符串的格式 "%d %m %Y %H:%M:%S"
-        dt = datetime.datetime.strptime(element, "%m %d, %Y")
-        date_time = str(dt)
-        return date_time
+    def input_text(cls, next_url):
+        # 打开文件
+        fo = open("sort_time.txt", "r+", encoding='utf-8')
+        # 在文件末尾写上一行
+        fo.seek(0, 2)
+        fo.write(next_url)
+        fo.write('\n')
+        fo.close()
 
 # ---------------------------------------------------------------------------------------
 
@@ -98,9 +78,10 @@ class SortTimestamp:
     # 查询所有collections
     def find_all(self):
         # 查询所有
-        cursors = self.collection.find()
-        # for data in cursors:
-        #     print(data)
+        cursors = self.collection.find().sort([("timestamp", 1)])
+        for data in cursors:
+            print(data)
+            self.input_text(str(data))
         print("总记录数为：", cursors.count())
         self.client.close()
         return cursors.count()
