@@ -6,7 +6,6 @@ import pandas as pd
 import DataPreprocessing.NaturalLanProcess as dpt4  # 引入自然语言处理
 import pymongo
 from datetime import datetime
-from datetime import timedelta
 import datetime
 
 
@@ -98,10 +97,11 @@ class DataProcess:
                     key_words = key_words + temp_keywords
                 # end if
             # 输出每一行的input_list
+            _id = self.get_next_counter()
             insert_text = {"uid": self.collection_name, "用户ID": user_id,
                            "服务ID": service_id, "时间": date_time,
                            "timestamp": time_stamp, "内容": content,
-                           "keywords": key_words
+                           "keywords": key_words, "_id": _id
                            }
             print("row_input_list:", insert_text)
             # 插入数据库
@@ -145,9 +145,26 @@ class DataProcess:
         element = element.replace("Dec", "12")
         print("new element:", element)
         # 格式化的字符串转换成Datetime, 具体看字符串的格式 "%d %m %Y %H:%M:%S"
-        dt = datetime.datetime.strptime(element, "%m %d, %Y")
+        dt = datetime.datetime.strptime(element, "%d %m %y")
         date_time = str(dt)
         return date_time
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    获取自增1的_id,默认与初始参数相同的数据库
+    """
+    def get_next_counter(self):
+        collection = self.db.get_collection("counters")
+        _id_obj = collection.find_and_modify(query={'_id': self.collection_name},
+                                             update={"$inc": {"no": +1}},
+                                             upsert=False,
+                                             full_response=True, new=True
+                                             )
+        # print("_id_obj:", _id_obj)
+        _id = _id_obj.get("value").get("no")
+        # print("_id:", _id)
+        return _id
 
 # ---------------------------------------------------------------------------------------
 
@@ -255,7 +272,7 @@ def main_operation():
     file_path = 'data/bloGS.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U03"  # 集合的名字
+    collection_name = "U01"  # 集合的名字
     flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
     dp1 = DataProcess(file_path, db_name, collection_name,
                       ip_address, flag_insert)
@@ -269,34 +286,4 @@ if __name__ == "__main__":
     # 记录算法运行结束时间
     end_time = time.clock()
     print("Running time: %s Seconds" % (end_time - start_time))  # 输出运行时间(包括最后输出所有结果)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

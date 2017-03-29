@@ -1,0 +1,52 @@
+﻿用户ID,服务ID,时间,行为,title
+Steven,Stack Overflow,2016-11-21 14:51:03Z,accepted,How to let a Visual Studio 2015 xproject (project.json) reference the highest framework of a depending project
+Steven,Stack Overflow,2015-08-10 09:00:56Z,accepted,How to read action method&#39;s attributes in ASP.NET Core MVC?
+Steven,Stack Overflow,2013-12-29 16:32:48Z,accepted,Decorating ASP.NET Web API IHttpController
+Steven,Stack Overflow,2012-10-18 13:12:18Z,accepted,BuildManager.GetReferencedAssemblies equivalent for non-web applications
+Steven,Stack Overflow,2011-08-25 13:34:25Z,accepted,Autofac: Hiding multiple contravariant implementations behind one composite
+Steven,Stack Overflow,2016-11-16 13:20:36Z,accepted,How do compiler directives work with project.json in Visual Studio 2015
+Steven,Stack Overflow,2015-07-25 11:19:17Z,accepted,Visual Studio 2015 / C# 6 / Roslyn can&#39;t compile XML comments in PCL project
+Steven,Stack Overflow,2013-12-29 16:31:58Z,accepted,How to resolve Web API Message Handler / DelegatingHandler from IoC container on each request
+Steven,Stack Overflow,2012-10-18 13:11:30Z,accepted,How to get the generic type parameters for a ENVDTE CodeInterface?
+Steven,Stack Overflow,2011-04-28 04:46:04Z,accepted,Autofac: Batch registration of open generic types
+Steven,Stack Overflow,2016-11-10 10:22:35Z,accepted,What is the equivalent of Type.GetGenericArguments() in .NETStandard 1.0 / .NET Core?
+Steven,Stack Overflow,2015-02-25 11:18:24Z,accepted,Applying generic decorators conditionally in Autofac based on configuration values
+Steven,Stack Overflow,2013-10-31 16:20:26Z,accepted,How to define a foreign key to a sub type in a TPT inheritance hierarchy
+Steven,Stack Overflow,2012-09-13 06:59:00Z,accepted,Should translation of a user specific &#39;end date&#39; to a DateTime be done at the Presentation Layer or Business Layer?
+Steven,Stack Overflow,2011-04-21 21:12:03Z,accepted,StructureMap: Injecting a primitive property in a base class
+Steven,Stack Overflow,2016-09-24 22:01:02Z,accepted,Implementation and usage of logger wrapper for Microsoft.Extensions.Logging
+Steven,Stack Overflow,2013-09-24 12:15:15Z,accepted,Adding validation in WinForms without IDataErrorInfo
+Steven,Stack Overflow,2012-06-30 10:18:51Z,accepted,What does RuntimeHelpers.GetHashCode do
+Steven,Stack Overflow,2011-04-20 13:08:53Z,accepted,Injecting a primitive property in a base class with Castle Windsor
+Steven,Stack Overflow,2015-02-25 11:18:14Z,accepted,Applying generic decorators conditionally in Autofac based on generic type constraints
+Steven,Stack Overflow,2016-09-19 07:13:58Z,accepted,Implementation and usage of logger wrapper for Serilog
+Steven,Stack Overflow,2013-09-09 14:46:47Z,accepted,Get list of active items from ConditionalWeakTable&lt;T&gt;
+Steven,Stack Overflow,2012-06-28 07:34:31Z,accepted,When does the UnderlyingSystemType differ from the current Type instance
+Steven,Stack Overflow,2011-03-30 15:27:31Z,accepted,Partial trust: How to instantiate a generic type without a generic type argument
+Steven,Stack Overflow,2015-02-25 11:10:14Z,accepted,ASP.NET Web API caches action filter attributes across requests
+Steven,Stack Overflow,2016-07-18 21:52:06Z,accepted,MassTransit with SQL Server Database Transport
+Steven,Stack Overflow,2013-08-04 20:05:47Z,accepted,How to enable forward compatibility on a reusable .NET library?
+Steven,Stack Overflow,2012-06-09 16:24:04Z,accepted,Which of the .NET included hashing algorithms are secure enough for password hashing?
+Steven,Stack Overflow,2011-01-18 07:48:35Z,accepted,Running MSTest in partial trust from within Visual Studio
+Steven,Stack Overflow,2014-11-17 09:28:58Z,accepted,LINQ to Entities only supports casting EDM primitive or enumeration types with IEntity interface
+Steven,Stack Overflow,2016-06-20 08:49:37Z,accepted,Configuring Swashbuckle With DelegatingHandler as message dispatcher
+Steven,Stack Overflow,2013-03-26 09:28:37Z,accepted,Registering a custom PageHandlerFactory through code
+Steven,Stack Overflow,2011-12-14 21:24:05Z,accepted,Why doesn&#39;t C# infer my generic types?
+Steven,Stack Overflow,2010-06-22 13:21:12Z,accepted,How to encode JavaScript text inside an XML attribute?
+Steven,Stack Overflow,2014-09-17 10:37:43Z,accepted,Applying non-MVC related attributes to MVC actions
+Steven,Stack Overflow,2016-03-29 00:25:49Z,accepted,Memory leak when ThreadLocal&lt;T&gt; is used in cyclic graph
+Steven,Stack Overflow,2013-02-19 12:46:26Z,accepted,Security Transparent alternative for RuntimeHelpers.PrepareDelegate
+Steven,Stack Overflow,2011-12-14 20:18:25Z,accepted,What (commercial) Entity Framework 4.0 LINQ providers are available?
+Steven,Stack Overflow,2010-05-22 20:11:29Z,accepted,Which O/RM tool supports Microsofts Access?
+Steven,Stack Overflow,2014-03-21 15:56:39Z,accepted,Entity Framework 5 does not clear navigation property
+Steven,Stack Overflow,2015-12-13 16:32:40Z,accepted,How to wrap and replace one of the default components in the ASP.NET 5 configuration
+Steven,Stack Overflow,2013-02-13 17:45:33Z,accepted,Delegate compiled with Expression.Block keeps throwing NullReferenceException
+Steven,Stack Overflow,2011-12-13 10:48:59Z,accepted,"Is there a way to let the compiler determine the namespace my classes, based on the directory structure of my project?"
+Steven,Stack Overflow,2010-05-01 13:17:46Z,accepted,New NCover 3.4.2 makes all my MSTest unit tests fail
+Steven,Stack Overflow,2014-02-26 19:07:55Z,accepted,lazy&lt;T&gt; with LazyThreadSafetyMode.None can throw NullReferenceException
+Steven,Stack Overflow,2015-11-26 21:59:38Z,accepted,Implementing asynchronous scoping in PCL and Windows Phone applications
+Steven,Stack Overflow,2012-10-22 14:39:23Z,accepted,Difference between Type.IsGenericTypeDefinition and Type.ContainsGenericParameters
+Steven,Stack Overflow,2011-09-08 07:31:36Z,accepted,Autofac: Resolving variant types with both in and out type arguments
+Steven,Stack Overflow,2010-03-23 06:57:25Z,accepted,Where did my Visual Studio exception assistant go?
+Steven,Stack Overflow,2014-01-10 10:46:45Z,accepted,Entity Framework EDMX file size disproportional big (many megabytes)
+Steven,Stack Overflow,2010-02-07 16:47:48Z,accepted,C# compiler doesn’t optimize unnecessary casts

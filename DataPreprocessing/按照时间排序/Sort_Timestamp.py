@@ -3,9 +3,6 @@
 """
 import time
 import pymongo
-from datetime import datetime
-import datetime
-import math
 
 
 class SortTimestamp:
@@ -15,7 +12,7 @@ class SortTimestamp:
 
     # 构造函数
     def __init__(self, db_name, collection_name, ip_address,
-                 flag_insert, piece):
+                 flag_insert, piece, new_db):
         self.db_name = db_name
         self.collection_name = collection_name
         self.ip_address = ip_address
@@ -29,6 +26,8 @@ class SortTimestamp:
         self.flag_insert = flag_insert
         # 一份多少个记录
         self.piece = piece
+        # 待插入数据的新数据库
+        self.new_db = self.client.get_database(new_db)
 
     # 析构函数
     def __del__(self):
@@ -42,23 +41,26 @@ class SortTimestamp:
     def find_all_records(self):
         sum_count = self.find_all()
         print("sum_count:", sum_count)
-        shares = math.ceil(sum_count / self.piece)
-        print("shares:", shares)
 
 # ---------------------------------------------------------------------------------------
 
     """
-            单个写入文本的方法
-            """
-    @classmethod
-    def input_text(cls, next_url):
-        # 打开文件
-        fo = open("sort_time.txt", "r+", encoding='utf-8')
-        # 在文件末尾写上一行
-        fo.seek(0, 2)
-        fo.write(next_url)
-        fo.write('\n')
-        fo.close()
+    获取自增1的_id,
+    数据库：data_status
+    文档：counters
+    """
+    def get_next_counter(self, db_name):
+        new_db = self.client.get_database(db_name)
+        collection = new_db.get_collection("counters")
+        _id_obj = collection.find_and_modify(query={'_id': self.collection_name},
+                                             update={"$inc": {"no": +1}},
+                                             upsert=False,
+                                             full_response=True, new=True
+                                             )
+        # print("_id_obj:", _id_obj)
+        _id = _id_obj.get("value").get("no")
+        # print("_id:", _id)
+        return _id
 
 # ---------------------------------------------------------------------------------------
 
@@ -70,6 +72,12 @@ class SortTimestamp:
         # 添加单条记录到集合中
         self.collection.insert(input_tuple)
 
+    # 写入MongoDB数据库
+    def input_status_data(self, input_tuple):
+        # 添加单条记录到集合中
+        collection = self.new_db.get_collection(self.collection_name)
+        collection.insert(input_tuple)
+
     # 批量插入数据
     def input_many_database(self, input_tuple):
             # 添加单条记录到集合中
@@ -80,8 +88,14 @@ class SortTimestamp:
         # 查询所有
         cursors = self.collection.find().sort([("timestamp", 1)])
         for data in cursors:
-            print(data)
-            self.input_text(str(data))
+            print("type:", type(data), ", data:", data)
+            # 更换_id
+            new_id = self.get_next_counter("data_status")
+            data['_id'] = new_id
+            print("new_data:", data)
+
+            # 插入新的数据库
+            self.input_status_data(data)
         print("总记录数为：", cursors.count())
         self.client.close()
         return cursors.count()
@@ -94,15 +108,20 @@ class SortTimestamp:
 
     # 查找一个文档
     def find_one(self):
-        for u in self.collection.find({"_id": 1}):
-            print("符合条件的记录(_id:1 ): ", u)
+        count = 0
+        for u in self.collection.find({"timestamp": '', "时间": ''}):
+            print("符合条件的记录: ", u)
+            print("timestamp:", u.get("timestamp"), ", type:", type(u.get("timestamp")))
+            count += 1
+            print()
             self.client.close()
+        print("count:", count)
 
     # 删除一个数据
     def delete_one(self):
-        for u in self.collection.find({"_id": 1}):
-            print("符合条件的记录(_id:1 ): ", u)
-            self.collection.remove({"_id": 1})
+        for u in self.collection.find({"timestamp": '', "时间": ''}):
+            print("符合条件的记录(_id): ", u.get("_id"))
+            self.collection.remove({"_id": u.get("_id")})
             self.client.close()
 
     # 删除所有数据
@@ -113,67 +132,21 @@ class SortTimestamp:
 # ----------------------------------------------------------------------------------------------------------
 
 
-"""
-switch功能
-"""
-
-
-class Switch(object):
-    def __init__(self, value):
-        self.value = value
-        self.fall = False
-
-    def __iter__(self):
-        """Return the match method once, then stop"""
-        yield self.match
-        raise StopIteration
-
-    def match(self, *args):
-        """Indicate whether or not to enter a case suite"""
-        if self.fall or not args:
-            return True
-        elif self.value in args:  # changed for
-            self.fall = True
-            return True
-        else:
-            return False
-
-
-# The following example is pretty much the exact use-case of a dictionary,
-# but is included for its simplicity. Note that you can include statements
-# in each suite.
-
-v = 'ten3'
-for case in Switch(v):
-    if case('one'):
-        print("1")
-        break
-    if case('two'):
-        print("2")
-        break
-    if case('ten'):
-        print('10')
-        break
-    if case('eleven'):
-        print("11")
-        break
-    if case():  # default, could also just omit condition or 'if True'
-        print("something else!")
-        # No need to break here, it'll stop anyway
-
-# ----------------------------------------------------------------------------------------------------------
-
-
 def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U01"  # 读取数据集合的名字
+    collection_name = "U04"  # 读取数据集合的名字
     flag_insert = "0"  # 1代表写入数据库, 其他代表不输入数据库
     piece = 1000  # 每份多少个记录
+    new_db = "data_status"  # 待插入的新数据库
     dp1 = SortTimestamp(db_name, collection_name,
-                        ip_address, flag_insert, piece)
+                        ip_address, flag_insert, piece, new_db)
+    dp1.delete_one()
     dp1.find_all_records()  # 先从数据库中读取全部数据，每一份只有一千个数据。
+    # 读取一条记录, 参数_id
+    # dp1.find_one()
+
 
 if __name__ == "__main__":
     # 记录算法运行开始时间

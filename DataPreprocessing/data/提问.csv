@@ -1,0 +1,54 @@
+﻿用户ID,服务ID,时间,行为,内容
+Steven,Stack Overflow,2016-11-20 20:49:14Z,asked,How to let a Visual Studio 2015 xproject (project.json) reference the highest framework of a depending project
+Steven,Stack Overflow,2015-08-07 09:47:53Z,asked,How to read action method&#39;s attributes in ASP.NET Core MVC?
+Steven,Stack Overflow,2013-12-09 21:12:33Z,asked,How to resolve Web API Message Handler / DelegatingHandler from IoC container on each request
+Steven,Stack Overflow,2012-10-22 13:43:26Z,asked,Difference between Type.IsGenericTypeDefinition and Type.ContainsGenericParameters
+Steven,Stack Overflow,2011-12-09 11:29:45Z,asked,"Is there a way to let the compiler determine the namespace my classes, based on the directory structure of my project?"
+Steven,Stack Overflow,2016-11-16 12:25:48Z,asked,How do compiler directives work with project.json in Visual Studio 2015
+Steven,Stack Overflow,2015-07-21 14:05:03Z,asked,Visual Studio 2015 / C# 6 / Roslyn can&#39;t compile XML comments in PCL project
+Steven,Stack Overflow,2013-12-07 17:04:43Z,asked,Decorating ASP.NET Web API IHttpController
+Steven,Stack Overflow,2012-10-08 10:16:44Z,asked,BuildManager.GetReferencedAssemblies equivalent for non-web applications
+Steven,Stack Overflow,2011-09-06 17:31:07Z,asked,Autofac: Resolving variant types with both in and out type arguments
+Steven,Stack Overflow,2016-09-21 07:27:18Z,asked,Implementation and usage of logger wrapper for Microsoft.Extensions.Logging
+Steven,Stack Overflow,2014-12-25 10:05:54Z,asked,ASP.NET Web API caches action filter attributes across requests
+Steven,Stack Overflow,2013-10-29 15:05:48Z,asked,How to define a foreign key to a sub type in a TPT inheritance hierarchy
+Steven,Stack Overflow,2012-09-30 15:37:31Z,asked,How to get the generic type parameters for a ENVDTE CodeInterface?
+Steven,Stack Overflow,2011-08-21 15:04:08Z,asked,Autofac: Hiding multiple contravariant implementations behind one composite
+Steven,Stack Overflow,2016-09-14 20:34:47Z,asked,Implementation and usage of logger wrapper for Serilog
+Steven,Stack Overflow,2013-09-24 08:27:10Z,asked,LINQ to Entities only supports casting EDM primitive or enumeration types with IEntity interface
+Steven,Stack Overflow,2012-09-12 11:58:14Z,asked,Should translation of a user specific &#39;end date&#39; to a DateTime be done at the Presentation Layer or Business Layer?
+Steven,Stack Overflow,2011-04-26 11:53:54Z,asked,Autofac: Batch registration of open generic types
+Steven,Stack Overflow,2014-09-17 10:07:08Z,asked,Applying non-MVC related attributes to MVC actions
+Steven,Stack Overflow,2016-08-24 17:25:37Z,asked,What is the equivalent of Type.GetGenericArguments() in .NETStandard 1.0 / .NET Core?
+Steven,Stack Overflow,2013-09-07 14:27:57Z,asked,Get list of active items from ConditionalWeakTable&lt;T&gt;
+Steven,Stack Overflow,2012-06-28 07:33:58Z,asked,What does RuntimeHelpers.GetHashCode do
+Steven,Stack Overflow,2011-04-20 19:56:46Z,asked,StructureMap: Injecting a primitive property in a base class
+Steven,Stack Overflow,2014-02-26 13:04:46Z,asked,Excluding a field or property from serialization based on some condition
+Steven,Stack Overflow,2016-07-18 07:49:24Z,asked,MassTransit with SQL Server Database Transport
+Steven,Stack Overflow,2013-08-01 14:43:29Z,asked,How to enable forward compatibility on a reusable .NET library?
+Steven,Stack Overflow,2012-06-27 13:16:53Z,asked,When does the UnderlyingSystemType differ from the current Type instance
+Steven,Stack Overflow,2011-04-20 11:59:24Z,asked,Injecting a primitive property in a base class with Castle Windsor
+Steven,Stack Overflow,2014-05-28 09:20:31Z,asked,Why does a Web API TypeFormatter not run in the same Call Context as the request of the request?
+Steven,Stack Overflow,2016-06-01 13:44:58Z,asked,Configuring Swashbuckle With DelegatingHandler as message dispatcher
+Steven,Stack Overflow,2013-05-28 10:47:39Z,asked,Adding validation in WinForms without IDataErrorInfo
+Steven,Stack Overflow,2012-06-08 12:38:04Z,asked,Which of the .NET included hashing algorithms are secure enough for password hashing?
+Steven,Stack Overflow,2011-03-29 18:29:50Z,asked,Partial trust: How to instantiate a generic type without a generic type argument
+Steven,Stack Overflow,2014-05-08 19:16:58Z,asked,Applying generic decorators conditionally in Autofac based on generic type constraints
+Steven,Stack Overflow,2015-12-10 16:04:21Z,asked,How to wrap and replace one of the default components in the ASP.NET 5 configuration
+Steven,Stack Overflow,2013-03-20 11:41:43Z,asked,Registering a custom PageHandlerFactory through code
+Steven,Stack Overflow,2012-01-23 12:29:45Z,asked,Entity Framework EDMX file size disproportional big (many megabytes)
+Steven,Stack Overflow,2011-01-12 17:11:54Z,asked,Running MSTest in partial trust from within Visual Studio
+Steven,Stack Overflow,2014-05-05 12:35:27Z,asked,Applying generic decorators conditionally in Autofac based on configuration values
+Steven,Stack Overflow,2015-11-21 12:11:38Z,asked,Implementing asynchronous scoping in PCL and Windows Phone applications
+Steven,Stack Overflow,2013-02-19 11:27:06Z,asked,Security Transparent alternative for RuntimeHelpers.PrepareDelegate
+Steven,Stack Overflow,2011-12-14 20:17:43Z,asked,Why doesn&#39;t C# infer my generic types?
+Steven,Stack Overflow,2010-06-08 10:20:19Z,asked,How to encode JavaScript text inside an XML attribute?
+Steven,Stack Overflow,2014-03-21 11:36:40Z,asked,Entity Framework 5 does not clear navigation property
+Steven,Stack Overflow,2015-10-16 14:12:05Z,asked,Memory leak when ThreadLocal&lt;T&gt; is used in cyclic graph
+Steven,Stack Overflow,2013-02-13 15:41:44Z,asked,Delegate compiled with Expression.Block keeps throwing NullReferenceException
+Steven,Stack Overflow,2011-12-13 10:42:28Z,asked,What (commercial) Entity Framework 4.0 LINQ providers are available?
+Steven,Stack Overflow,2010-05-22 12:36:00Z,asked,Which O/RM tool supports Microsofts Access?
+Steven,Stack Overflow,2014-02-09 11:08:40Z,asked,lazy&lt;T&gt; with LazyThreadSafetyMode.None can throw NullReferenceException
+Steven,Stack Overflow,2010-04-28 08:54:05Z,asked,New NCover 3.4.2 makes all my MSTest unit tests fail
+Steven,Stack Overflow,2010-03-11 16:42:39Z,asked,Where did my Visual Studio exception assistant go?
+Steven,Stack Overflow,2010-02-07 12:26:42Z,asked,C# compiler doesn’t optimize unnecessary casts

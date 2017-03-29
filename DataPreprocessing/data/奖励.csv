@@ -1,0 +1,104 @@
+﻿用户ID,服务ID,时间,行为,标记
+Steven,Stack Overflow,2017-03-10 22:31:23Z,awarded,Enlightened
+Steven,Stack Overflow,2016-09-15 20:55:44Z,awarded,Great Answer
+Steven,Stack Overflow,2016-01-23 03:05:47Z,awarded,inversion-of-control
+Steven,Stack Overflow,2015-06-14 03:10:31Z,awarded,structuremap
+Steven,Stack Overflow,2014-08-11 12:33:28Z,awarded,Archaeologist
+Steven,Stack Overflow,2017-03-10 21:00:25Z,awarded,Nice Answer
+Steven,Stack Overflow,2016-09-11 19:45:46Z,awarded,Nice Question
+Steven,Stack Overflow,2016-01-22 03:06:52Z,awarded,unity-container
+Steven,Stack Overflow,2015-05-15 10:19:53Z,awarded,Disciplined
+Steven,Stack Overflow,2014-08-02 03:07:13Z,awarded,asp.net-mvc-3
+Steven,Stack Overflow,2017-02-27 03:04:46Z,awarded,Announcer
+Steven,Stack Overflow,2016-08-23 05:30:48Z,awarded,Necromancer
+Steven,Stack Overflow,2015-12-29 16:05:23Z,awarded,Famous Question
+Steven,Stack Overflow,2015-05-09 03:09:39Z,awarded,validation
+Steven,Stack Overflow,2014-08-02 03:07:13Z,awarded,simple-injector
+Steven,Stack Overflow,2017-02-17 21:22:42Z,awarded,Good Answer
+Steven,Stack Overflow,2016-06-22 07:11:03Z,awarded,Benefactor
+Steven,Stack Overflow,2015-12-23 03:05:25Z,awarded,simple-injector
+Steven,Stack Overflow,2014-12-24 19:58:44Z,awarded,Custodian
+Steven,Stack Overflow,2014-07-02 17:44:21Z,awarded,Inquisitive
+Steven,Stack Overflow,2017-02-17 04:04:28Z,awarded,solid-principles
+Steven,Stack Overflow,2016-06-16 06:35:27Z,awarded,Promoter
+Steven,Stack Overflow,2015-11-17 07:59:07Z,awarded,Caucus
+Steven,Stack Overflow,2014-12-05 03:07:05Z,awarded,asp.net-web-api
+Steven,Stack Overflow,2014-07-02 16:05:24Z,awarded,Curious
+Steven,Stack Overflow,2017-02-06 04:04:07Z,awarded,asp.net-core
+Steven,Stack Overflow,2016-06-08 13:58:34Z,awarded,Tumbleweed
+Steven,Stack Overflow,2015-10-27 03:07:15Z,awarded,wcf
+Steven,Stack Overflow,2014-10-30 21:43:30Z,awarded,Electorate
+Steven,Stack Overflow,2014-06-04 03:08:05Z,awarded,unit-testing
+Steven,Stack Overflow,2017-02-02 20:35:30Z,awarded,Yearling
+Steven,Stack Overflow,2016-05-04 04:03:04Z,awarded,asp.net-mvc-4
+Steven,Stack Overflow,2015-10-19 03:05:29Z,awarded,oop
+Steven,Stack Overflow,2014-10-21 08:38:16Z,awarded,Revival
+Steven,Stack Overflow,2014-04-16 03:23:58Z,awarded,entity-framework
+Steven,Stack Overflow,2017-01-30 01:55:33Z,awarded,Notable Question
+Steven,Stack Overflow,2016-04-29 06:31:29Z,awarded,Guru
+Steven,Stack Overflow,2014-09-30 19:36:15Z,awarded,Explainer
+Steven,Stack Overflow,2014-04-12 03:21:16Z,awarded,ioc-container
+Steven,Stack Overflow,2015-10-09 03:05:41Z,awarded,reflection
+Steven,Stack Overflow,2016-12-13 07:34:26Z,awarded,Popular Question
+Steven,Stack Overflow,2016-03-16 04:05:16Z,awarded,unity-container
+Steven,Stack Overflow,2014-09-30 19:13:46Z,awarded,Refiner
+Steven,Stack Overflow,2014-03-20 11:22:59Z,awarded,Reviewer
+Steven,Stack Overflow,2015-08-12 03:09:21Z,awarded,asp.net-mvc
+Steven,Stack Overflow,2016-09-30 11:14:52Z,awarded,Educated
+Steven,Stack Overflow,2016-02-11 00:48:18Z,awarded,Good Question
+Steven,Stack Overflow,2014-09-11 03:05:37Z,awarded,linq
+Steven,Stack Overflow,2014-02-27 03:08:10Z,awarded,multithreading
+Steven,Stack Overflow,2015-07-25 03:14:00Z,awarded,ninject
+Steven,Stack Overflow,2014-02-12 03:07:29Z,awarded,autofac
+Steven,Stack Overflow,2013-03-25 03:03:26Z,awarded,asp.net-mvc
+Steven,Stack Overflow,2012-02-21 06:44:55Z,awarded,Fanatic
+Steven,Stack Overflow,2010-12-21 03:01:30Z,awarded,linq
+Steven,Stack Overflow,2010-05-27 13:25:36Z,awarded,.net
+Steven,Stack Overflow,2013-10-11 03:04:06Z,awarded,inversion-of-control
+Steven,Stack Overflow,2013-01-30 03:03:04Z,awarded,generics
+Steven,Stack Overflow,2012-02-01 03:02:17Z,awarded,ioc-container
+Steven,Stack Overflow,2010-12-21 03:01:30Z,awarded,linq-to-sql
+Steven,Stack Overflow,2010-04-12 07:17:32Z,awarded,Citizen Patrol
+Steven,Stack Overflow,2013-09-25 03:03:45Z,awarded,dependency-injection
+Steven,Stack Overflow,2012-12-07 17:10:14Z,awarded,Taxonomist
+Steven,Stack Overflow,2012-01-20 03:02:09Z,awarded,entity-framework
+Steven,Stack Overflow,2010-12-12 20:38:06Z,awarded,Autobiographer
+Steven,Stack Overflow,2010-03-24 17:13:56Z,awarded,c#
+Steven,Stack Overflow,2013-08-30 03:03:57Z,awarded,asp.net
+Steven,Stack Overflow,2012-09-05 03:03:10Z,awarded,dependency-injection
+Steven,Stack Overflow,2011-08-15 10:46:01Z,awarded,Excavator
+Steven,Stack Overflow,2010-11-30 03:01:20Z,awarded,asp.net
+Steven,Stack Overflow,2010-03-11 11:22:44Z,awarded,Civic Duty
+Steven,Stack Overflow,2013-08-18 03:08:05Z,awarded,design-patterns
+Steven,Stack Overflow,2012-08-22 06:54:34Z,awarded,Copy Editor
+Steven,Stack Overflow,2011-08-11 17:53:42Z,awarded,Proofreader
+Steven,Stack Overflow,2010-10-28 03:12:38Z,awarded,c#
+Steven,Stack Overflow,2010-03-03 10:47:45Z,awarded,Enthusiast
+Steven,Stack Overflow,2013-07-20 03:03:28Z,awarded,simple-injector
+Steven,Stack Overflow,2011-07-10 06:51:50Z,awarded,Quorum
+Steven,Stack Overflow,2010-10-06 19:19:07Z,awarded,Cleanup
+Steven,Stack Overflow,2010-02-19 13:22:31Z,awarded,Organizer
+Steven,Stack Overflow,2012-06-21 03:02:56Z,awarded,ninject
+Steven,Stack Overflow,2011-06-09 03:01:30Z,awarded,.net
+Steven,Stack Overflow,2010-02-07 16:52:32Z,awarded,Scholar
+Steven,Stack Overflow,2010-09-14 12:28:17Z,awarded,Strunk &amp; White
+Steven,Stack Overflow,2013-06-27 09:58:05Z,awarded,Informed
+Steven,Stack Overflow,2012-06-08 23:13:31Z,awarded,Constituent
+Steven,Stack Overflow,2011-05-17 03:01:59Z,awarded,dependency-injection
+Steven,Stack Overflow,2010-02-07 12:52:31Z,awarded,Student
+Steven,Stack Overflow,2010-08-09 13:30:45Z,awarded,Peer Pressure
+Steven,Stack Overflow,2013-06-21 03:03:53Z,awarded,.net
+Steven,Stack Overflow,2012-03-28 03:02:22Z,awarded,inversion-of-control
+Steven,Stack Overflow,2011-02-24 15:08:49Z,awarded,Sportsmanship
+Steven,Stack Overflow,2010-02-05 16:12:33Z,awarded,Critic
+Steven,Stack Overflow,2010-06-30 14:42:33Z,awarded,Self-Learner
+Steven,Stack Overflow,2013-06-14 03:03:52Z,awarded,castle-windsor
+Steven,Stack Overflow,2012-03-10 15:35:59Z,awarded,Pundit
+Steven,Stack Overflow,2010-02-04 16:12:32Z,awarded,Commentator
+Steven,Stack Overflow,2010-06-17 09:07:43Z,awarded,Mortarboard
+Steven,Stack Overflow,2011-02-22 05:10:16Z,awarded,Tag Editor
+Steven,Stack Overflow,2013-04-05 22:55:33Z,awarded,Talkative
+Steven,Stack Overflow,2012-02-29 03:02:08Z,awarded,c#
+Steven,Stack Overflow,2010-02-04 15:27:31Z,awarded,Editor
+Steven,Stack Overflow,2010-02-04 10:32:31Z,awarded,Supporter
+Steven,Stack Overflow,2010-02-03 11:22:31Z,awarded,Teacher
