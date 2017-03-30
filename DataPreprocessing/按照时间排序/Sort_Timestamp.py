@@ -136,13 +136,13 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U04"  # 读取数据集合的名字
+    collection_name = "U05"  # 读取数据集合的名字
     flag_insert = "0"  # 1代表写入数据库, 其他代表不输入数据库
     piece = 1000  # 每份多少个记录
     new_db = "data_status"  # 待插入的新数据库
     dp1 = SortTimestamp(db_name, collection_name,
                         ip_address, flag_insert, piece, new_db)
-    dp1.delete_one()
+    dp1.delete_one()   # 删除时间为空值的行
     dp1.find_all_records()  # 先从数据库中读取全部数据，每一份只有一千个数据。
     # 读取一条记录, 参数_id
     # dp1.find_one()
