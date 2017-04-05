@@ -21,8 +21,11 @@ o = rdflib.URIRef('http://www.example.org/活血')
 
 g1 = rdflib.Graph()
 g1.add((s, p, o))
-g1.serialize('zhongyao1.rdf') # 默认以'xml'格式存储
+g1.serialize('zhongyao1.rdf')  # 默认以'xml'格式存储
 
+
+
+# 读取RDF文件里面的数据
 g2 = rdflib.Graph()
 g2.parse('zhongyao1.rdf', format='xml') # 解析rdf文件时，需要指定格式
 subject = g2.subjects(p, o)

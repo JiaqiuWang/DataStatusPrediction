@@ -12,6 +12,9 @@ for s, p, o in g.triples((None, RDF.type, None)):
 
 bobgraph = Graph()
 
+n = Namespace("http://example.org/people/")
+bob = n.bob
+
 bobgraph += g.triples((bob, None, None))
 
 name = g.value(bob, FOAF.name)  # get any name of bob

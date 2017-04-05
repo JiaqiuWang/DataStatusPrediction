@@ -15,6 +15,7 @@ height = Literal(76.5)  # passing a python float
 n = Namespace("http://example.org/people/")  # rdflib.term.URIRef(u'http://example.org/people/bob')
 
 print(n.bob, n.eve)
+# print(n.bob, n.easdf)
 
 temp = URIRef("http://example.org/people/Bob")
 print("temp:", temp)
