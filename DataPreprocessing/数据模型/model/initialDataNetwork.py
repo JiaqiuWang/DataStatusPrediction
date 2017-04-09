@@ -138,6 +138,19 @@ class CreateModel:
                 graph.add((_keywords, _is, keywords))
                 print("turtle:", graph.serialize(format='n3'))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
         print("counter:", counter)
 
 
