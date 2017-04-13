@@ -53,8 +53,9 @@ class User:
 
 class Stack:
     # 构造函数
-    def __init__(self, uid, u_name, datetime, timestamp, service,
+    def __init__(self, _id, uid, u_name, datetime, timestamp, service,
                  activity, title, content):
+        self._id = _id
         self.uid = uid
         self.u_name = u_name
         self.datetime = datetime
@@ -63,6 +64,12 @@ class Stack:
         self.activity = activity
         self.title = title
         self.content = content
+
+    def get_id(self):
+        return self._id
+
+    def set_id(self, value):
+        self._id = value
 
     def get_uid(self):
         return self.uid
@@ -185,8 +192,9 @@ class SNS:
 
 class Blog:
     # 构造函数
-    def __init__(self, uid, u_name, datetime, timestamp, service,
+    def __init__(self, _id, uid, u_name, datetime, timestamp, service,
                  activity, title, content):
+        self._id = _id
         self.uid = uid
         self.u_name = u_name
         self.datetime = datetime
@@ -195,6 +203,12 @@ class Blog:
         self.activity = activity
         self.title = title
         self.content = content
+
+    def get_id(self):
+        return self._id
+
+    def set_id(self, value):
+        self._id = value
 
     def get_uid(self):
         return self.uid

@@ -6,6 +6,7 @@ import time
 import pymongo
 from rdflib import Graph
 from rdflib import Literal
+import DataPreprocessing.数据模型.class_model as cm  # 导入模块
 
 
 class CreateModel:
