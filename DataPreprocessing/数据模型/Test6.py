@@ -14,8 +14,7 @@ class CreateModel:
     nan_list = []  # 存放空值行的队列
 
     # 构造函数
-    def __init__(self, db_name, collection_name, ip_address,
-                 flag_insert, interval_s, k_no, ratio):
+    def __init__(self, db_name, collection_name, ip_address, k_no, ratio):
         self.db_name = db_name
         self.collection_name = collection_name
         self.ip_address = ip_address
@@ -25,10 +24,6 @@ class CreateModel:
         self.db = self.client.get_database(self.db_name)
         # 获取集合
         self.collection = self.db.get_collection(self.collection_name)
-        # 是否插入数据库标识位
-        self.flag_insert = flag_insert
-        # 版本时间间隔
-        self.interval_s = interval_s
         self.first_stamp = 0  # 初始时间戳
         self.k_no = k_no  # 初始数据网络包含的文档数
         self.ratio = ratio
@@ -39,6 +34,7 @@ class CreateModel:
     def __del__(self):
         class_name = self.__class__.__name__
         self.client.close()
+        print("!******************************************************!")
         print(class_name, "Destroy.")
 
 # ---------------------------------------------------------------------------------------
@@ -96,10 +92,14 @@ class CreateModel:
                 for i in range(len(self.list_network)):
                     iter_obj = self.list_network[i]  # 迭代的对象
                     original_content = obj.get_content()
+                    if (original_content == "") or (original_content is None):
+                        original_content = str(obj.get_keywords())
                     if obj is iter_obj:
                         continue
                     iterate_content = iter_obj.get_content() + \
                         iter_obj.get_title()
+                    if (iterate_content == "") or (iterate_content is None):
+                        iterate_content = str(iter_obj.get_keywords())
                     print("original_content:", original_content)
                     print("iter_cont:", iterate_content)
                     # 计算两个不同文本的相似性
@@ -141,15 +141,24 @@ class CreateModel:
     计算初始数据网络之后的数据节点和变化
     """
     def compute_data_network(self):
+        new_LNR = []  # 存放新生成的关系
         # 查询所有记录
         cursors = self.collection.find().skip(self.k_no)
+        counter = 0  # 计数器
         for data in cursors:
+            if counter > 2:
+                break
+            counter += 1
             obj = self.create_class_obj(data)
+            print("服务：", data.get("服务ID"))
+            print("实例数据:", obj.__class__.__name__)
             # print("obj_id:", obj.get_id())
+            print("count:", counter)
             self.list_network.append(obj)
-            # 计算新节点与原数据网络的关系
-            self.compute_updating_relation(obj)
-            # 计算变化
+            # 1.计算新节点与原数据网络的关系
+            dict_relation = self.compute_updating_relation(obj)
+            print("*-*-*-*-*-*-*-*-*-*-*-*")
+            new_LNR.append(dict_relation)  # 新关系
 
 # ---------------------------------------------------------------------------------------
 
@@ -160,16 +169,21 @@ class CreateModel:
         for i in range(len(self.list_network)):
             iter_obj = self.list_network[i]  # 迭代的对象
             original_content = obj.get_content()
+            if (original_content == "") or (original_content is None):
+                original_content = str(obj.get_keywords())
             if obj is iter_obj:
                 continue
             iterate_content = iter_obj.get_content() + iter_obj.get_title()
-            print("original_content:", original_content)
-            print("iter_cont:", iterate_content)
+            if (iterate_content == "") or (iterate_content is None):
+                iterate_content = str(iter_obj.get_keywords())
+            # print("original_content:", original_content)
+            # print("iter_cont:", iterate_content)
             # 计算两个不同文本的相似性
             rate = Levenshtein.ratio(original_content, iterate_content)
-            print("rate:", rate)
+            # print("rate:", rate)
             # 判断如果相似率大于阈值，则存入个人数据网络中
             if rate >= self.ratio:
+                print("rate:", rate)
                 # obj新插入的对象； iter_obj是老对象
                 # print("新对象对应的Class:", obj.__class__.__name__,
                 #       ", type:", type(obj.__class__.__name__))
@@ -182,8 +196,9 @@ class CreateModel:
                                  "pre_Class": iter_obj.__class__.__name__,
                                  "post_Class": obj.__class__.__name__, "pre_Activity": iter_obj.get_activity(),
                                  "post_Activity": obj.get_activity()}
-                print("new_relation:", dict_relation)
-                self.list_network_relation.append(dict_relation)
+                print("新联系:", dict_relation)
+                return dict_relation
+
 
 # ---------------------------------------------------------------------------------------
 
@@ -235,26 +250,6 @@ class CreateModel:
                                        title=title, keywords=keywords)
         # print('obj:', obj, ", _id:", obj.get_id())
         return obj
-
-# ---------------------------------------------------------------------------------------
-
-    """
-    生成一个数据模型的版本
-    """
-    def generate_rdf(self):
-        if self.first_stamp == 0:
-            print("没获取到第一个时间戳！")
-        else:
-            print("first_stamp:", self.first_stamp, ", one_interval:",
-                  self.interval_s + self.first_stamp)
-            print("first_date:", self.get_datetime(self.first_stamp),
-                  ", one_interval_date:", self.get_datetime((self.interval_s +
-                                                             self.first_stamp)))
-            # 查询所有
-            cursors = self.collection.find()
-            for data in cursors:
-                if data.get("timestamp") <= (self.interval_s + self.first_stamp):
-                    print("date:", data.get('时间'))
 
 # ---------------------------------------------------------------------------------------
 
@@ -419,18 +414,12 @@ def main_operation():
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "data_status"  # 数据库名字
     collection_name = "U01"  # 读取数据集合的名字
-    flag_insert = "0"  # 标志位，1代表写入数据库, 其他代表不输入数据库
-    # 模型版本的间隔时间单位，day：一天
-    day = 100  # 天数，可以是1/2, 1/3等
-    interval_s = 24*60*60*day  # 以秒计数
     # Part2: 创建初始个人数据网络,选取时间序列中前k条记录作为构建网络的基础结构
     k_no = 50
     # 所有的参数初始化，并建立类的对象
     # 文本相似度比率
-    ratio = 0.6
-
-    cm1 = CreateModel(db_name, collection_name, ip_address,
-                      flag_insert, interval_s, k_no, ratio)
+    ratio = 0.5
+    cm1 = CreateModel(db_name, collection_name, ip_address, k_no, ratio)
     cm1.initial_data_status()
     # 计算初始数据网络之后的数据网络和联系
     cm1.compute_data_network()
