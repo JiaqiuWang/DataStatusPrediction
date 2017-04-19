@@ -287,6 +287,37 @@ class CreateModel:
 # ---------------------------------------------------------------------------------------
 
     """
+    计算用户静态数据是否有变化,先判断是否有Linkedin 数据
+    """
+    def if_there_exp(self):
+        # 查询该用户是否有linkedin记录
+        # 获取集合
+        print("if there exp")
+        collection = self.db.get_collection("exp")
+        cursors = collection.find({"uid": "U5"}).sort([("stamp_from", 1)])
+        print("cursor:", cursors.count(), ", type:", type(cursors.count()))
+        if cursors.count() == 0:
+            return False
+        if cursors:
+            print("Have")
+        for data in cursors:
+            # print("sdfasdfa")
+            print("data:", data)
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------------------------------
+
+    """
     数据库操作
     """
     # 写入MongoDB数据库
@@ -441,13 +472,11 @@ def main_operation():
     k_no = 50
     # 所有的参数初始化，并建立类的对象
     # 文本相似度比率
-    ratio = 0.5
+    ratio = 0.4
     cm1 = CreateModel(db_name, collection_name, ip_address, k_no, ratio, net_db)
-    cm1.initial_data_status()
+    # cm1.initial_data_status()
     # 计算初始数据网络之后的数据网络和联系
-    cm1.compute_data_network()
-    # cm1.get_first_stamp()  # 获取第一条时间戳
-    # cm1.generate_RDF()  # 产生一个RDF模型
+    cm1.if_there_exp()
 
 
 if __name__ == "__main__":
@@ -458,4 +487,13 @@ if __name__ == "__main__":
     # 记录算法运行结束时间
     end_time = time.clock()
     print("Running time: %s Seconds" % (end_time - start_time))  # 输出运行时间(包括最后输出所有结果)
+
+
+
+
+
+
+
+
+
 

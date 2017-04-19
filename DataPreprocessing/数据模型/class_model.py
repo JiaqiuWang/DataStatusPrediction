@@ -8,11 +8,10 @@
 
 class User:
     # 构造函数
-    def __init__(self, uid, u_name, location, URL):
+    def __init__(self, uid, u_name, location):
         self.uid = uid
         self.u_name = u_name
         self.location = location
-        self.URL = URL
         self.education = ""
         self.skill = []
         self.job_exper = ""
