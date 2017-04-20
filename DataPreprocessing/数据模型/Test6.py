@@ -31,6 +31,8 @@ class CreateModel:
         self.ratio = ratio
         self.list_network = []  # 存放初始个人数据网络,包括节点
         self.list_network_relation = []  # 存放关系
+        self.position = []  # 存放linkedin个人静态数据节点的列表
+        self.flag = False  # 判断是否存在Linkedin静态数据
 
     # 析构函数
     def __del__(self):
@@ -61,19 +63,6 @@ class CreateModel:
 # ---------------------------------------------------------------------------------------
 
     """
-    获取第一条记录和对应的时间戳
-    """
-    def get_first_stamp(self):
-        # 查询所有
-        cursors = self.collection.find_one({"_id": 1})
-        print("cursor:", cursors)
-        print("first_timestamp:", cursors.get("timestamp"))
-        self.first_stamp = cursors.get("timestamp")
-        self.client.close()
-
-# ---------------------------------------------------------------------------------------
-
-    """
     Part2: 创建初始个人数据网络,选取时间序列中前k条记录作为构建网络的基础结构
     """
     def initial_data_status(self):
@@ -84,7 +73,11 @@ class CreateModel:
             # 大于初始数据网络的一条数据处理
             if counter >= self.k_no:
                 break
-            obj = self.create_class_obj(data)
+            # 设置Linkedin用户状态数据的初始状态
+            if counter == self.k_no - 1:
+                print("最后一条记录！！")
+                self.flag = self.initialize_linked_status(data)
+            obj = self.create_class_obj(data)  # 创建对象
             self.list_network.append(obj)
             counter += 1  # 计数器
             print("counter:", counter)
@@ -133,8 +126,56 @@ class CreateModel:
                 print("i:", i, ", list_network:", self.list_network_relation[i])
         else:
             print("list_network_relation is empty!")
+        # 输出用户职位数据 linkedin
+        if self.position:
+            for i in range(len(self.position)):
+                print("i:", ", position:", self.position[i])
+        else:
+            print("list_position is Empty!")
         print("counter:", counter)
 
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    计算初始数据网络之后的数据节点和变化, document是初始个人数据网络的最后一个文档
+    """
+    def initialize_linked_status(self, document):
+        timestamp = document.get("timestamp")
+        print("_id:", document.get("_id"), ", timestamp:", timestamp)
+        # 循环获取所有的linkedin所有状态，查找目前用户所处的状态
+        cursor = self.if_there_exp()
+        if cursor:
+            for i in cursor:
+                print("i-:", i)
+                if i.get("stamp_from") <= timestamp <= i.get("stamp_to"):
+                    # print("i&:", i)
+                    self.position.append(i)
+                if i.get("to") == "now":
+                    current_time = int(time.time())
+                    if i.get("stamp_from") <= timestamp <= current_time:
+                        # print("i&:", i)
+                        self.position.append(i)
+            return True
+        else:  # 如果不存在linked in 服务
+            print("flag:", cursor)
+            return False
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    计算用户静态数据是否有变化,先判断是否有Linkedin 数据
+    """
+    def if_there_exp(self):
+        # 查询该用户是否有linkedin记录
+        # 获取集合
+        collection = self.db.get_collection("exp")
+        cursors = collection.find({"uid": self.collection_name}).sort([("stamp_from", 1)])
+        # print("cursor:", cursors.count(), ", type:", type(cursors.count()))
+        if cursors.count() == 0:
+            return False
+        else:
+            return cursors
 
 # ---------------------------------------------------------------------------------------
 
@@ -146,12 +187,12 @@ class CreateModel:
         new_obj = []  # 存放新生成的实例对象
         new_obj_dict = []  # 存放新生成的对象字典
         list_service = []  # 存放新生成的service
-        # 查询所有记录
+        # 查询所有除了initial网络以外的数据
         cursors = self.collection.find().skip(self.k_no)
         counter = 0  # 计数器
         for data in cursors:
-            # if counter > 100:
-            #     break
+            if counter > 10:
+                break
             counter += 1
             obj = self.create_class_obj(data)
             print("服务：", data.get("服务ID"))
@@ -165,6 +206,11 @@ class CreateModel:
             list_service.append(data.get("服务ID"))
             # 1.计算新节点与原数据网络的关系
             dict_relation = self.compute_updating_relation(obj)
+            # 2.计算数据状态的变化-linkedin用户职位变化
+            if self.flag:
+                dict_varied = self.compute_updating_position(obj=obj, pre_version=self.position)
+                # self.position.clear()
+                # self.position = dict_varied.get("next_version")
             if dict_relation:
                 print("dict_relation:", dict_relation)
                 new_LNR.clear()
@@ -220,6 +266,90 @@ class CreateModel:
                                  "post_Activity": obj.get_activity()}
                 print("新联系:", dict_relation)
                 return dict_relation
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    计算position的变化
+    """
+    def compute_updating_position(self, obj, pre_version):
+        varied_position = []  # 变化的position
+        # 1.计算当前所处的position
+        timestamp = obj.get_timestamp()  # 当前记录的时间戳
+        datetime = obj.get_datetime()  # 当前记录的时间
+        print("该记录的时间：", datetime)
+        current_position = []
+        # 获取集合
+        collection = self.db.get_collection("exp")
+        cursors = collection.find({"uid": self.collection_name}).sort([("stamp_from", 1)])
+        for i in cursors:
+            if i.get("stamp_from") <= timestamp <= i.get("stamp_to"):
+                # print("i&:", i)
+                current_position.append(i)
+            if i.get("to") == "now":
+                current_time = int(time.time())
+                if i.get("stamp_from") <= timestamp <= current_time:
+                    # print("i&:", i)
+                    current_position.append(i)
+        # 计算变化， 前面的版本self.position,后面版本current_position
+        temp_pre_pos = self.position.copy()
+        print("pre-version:")
+        for w in pre_version:
+            print(w)
+        print("current-version:")
+        temp_cur_pos = current_position.copy()
+        for t in temp_cur_pos:
+            print(t)
+        same_temp_pos = []
+        for j in temp_cur_pos:
+            print("current_pos:", j.get("_id"))
+            for k in temp_pre_pos:
+                print("pre_V所有字典值：", k.values())
+                if j.get("_id") in k.values():
+                    same_temp_pos.append(j)
+                    continue
+        # 把所有的_id放到一起
+        same_temp_pos_ids = []
+        print("same_temp_pos:", len(same_temp_pos))
+        for i in same_temp_pos:
+            print(i.get("_id"))
+            same_temp_pos_ids.append(i.get("_id"))
+        # pre-version和current-version分别删除相同的，保留不同的。就是最后变化的部分
+        for i in temp_pre_pos:
+            if i.get("_id") not in same_temp_pos_ids:
+                varied_position.append(i)
+        for i in temp_cur_pos:
+            if i.get("_id") not in same_temp_pos_ids:
+                varied_position.append(i)
+        print("varied_pos:")
+        for i in varied_position:
+            print("i:", i)
+        # 把currrent_pos赋值给pre_version
+        self.position = current_position
+        return varied_position
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # ---------------------------------------------------------------------------------------
 
@@ -368,7 +498,7 @@ class CreateModel:
                        "Christianity", "Unix & Linux", "Bicycles",
                        "Webmasters", "Arqade", "Movies & TV"):
             return "YL"
-        if service in ("blogs", "Blog", "Blogs", "blog", "Quora"):
+        if service in ("blogs", "Blog", "Blogs", "blog", "Quora", "Pinboard"):
             return "Blog"
         if service in ("Github", "Gitlib", "Bitbucket"):
             return "Git"
