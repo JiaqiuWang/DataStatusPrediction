@@ -191,8 +191,8 @@ class CreateModel:
         cursors = self.collection.find().skip(self.k_no)
         counter = 0  # 计数器
         for data in cursors:
-            if counter > 10:
-                break
+            # if counter > 10:
+            #     break
             counter += 1
             obj = self.create_class_obj(data)
             print("服务：", data.get("服务ID"))
@@ -207,11 +207,11 @@ class CreateModel:
             # 1.计算新节点与原数据网络的关系
             dict_relation = self.compute_updating_relation(obj)
             # 2.计算数据状态的变化-linkedin用户职位变化
+            dict_varied = []
             if self.flag:
-                dict_varied = self.compute_updating_position(obj=obj, pre_version=self.position)
-                # self.position.clear()
-                # self.position = dict_varied.get("next_version")
-            if dict_relation:
+                # dict_varied变量是List类型
+                dict_varied = self.compute_updating_position(obj)
+            if dict_relation or len(dict_varied) != 0:
                 print("dict_relation:", dict_relation)
                 new_LNR.clear()
                 new_LNR.append(dict_relation)
@@ -219,7 +219,9 @@ class CreateModel:
                 _id = self.get_next_id(self.net_db)
                 input_text = {"_id": _id, "service": list_service,
                               "instance": new_obj_dict,
-                              "connect": new_LNR}
+                              "connect": new_LNR,
+                              "varied_pos": dict_varied
+                              }
                 print("input_text:", input_text)
                 self.insert_db(input_text)
                 new_obj.clear()
@@ -272,7 +274,7 @@ class CreateModel:
     """
     计算position的变化
     """
-    def compute_updating_position(self, obj, pre_version):
+    def compute_updating_position(self, obj):
         varied_position = []  # 变化的position
         # 1.计算当前所处的position
         timestamp = obj.get_timestamp()  # 当前记录的时间戳
@@ -283,18 +285,16 @@ class CreateModel:
         collection = self.db.get_collection("exp")
         cursors = collection.find({"uid": self.collection_name}).sort([("stamp_from", 1)])
         for i in cursors:
-            if i.get("stamp_from") <= timestamp <= i.get("stamp_to"):
-                # print("i&:", i)
-                current_position.append(i)
             if i.get("to") == "now":
                 current_time = int(time.time())
-                if i.get("stamp_from") <= timestamp <= current_time:
-                    # print("i&:", i)
+                if int(i.get("stamp_from")) <= timestamp <= current_time:
                     current_position.append(i)
+            elif int(i.get("stamp_from")) <= timestamp <= int(i.get("stamp_to")):
+                current_position.append(i)
         # 计算变化， 前面的版本self.position,后面版本current_position
         temp_pre_pos = self.position.copy()
         print("pre-version:")
-        for w in pre_version:
+        for w in temp_pre_pos:
             print(w)
         print("current-version:")
         temp_cur_pos = current_position.copy()
@@ -302,17 +302,17 @@ class CreateModel:
             print(t)
         same_temp_pos = []
         for j in temp_cur_pos:
-            print("current_pos:", j.get("_id"))
+            # print("current_pos:", j.get("_id"))
             for k in temp_pre_pos:
-                print("pre_V所有字典值：", k.values())
+                # print("pre_V所有字典值：", k.values())
                 if j.get("_id") in k.values():
                     same_temp_pos.append(j)
                     continue
         # 把所有的_id放到一起
         same_temp_pos_ids = []
-        print("same_temp_pos:", len(same_temp_pos))
+        # print("same_temp_pos:", len(same_temp_pos))
         for i in same_temp_pos:
-            print(i.get("_id"))
+            # print(i.get("_id"))
             same_temp_pos_ids.append(i.get("_id"))
         # pre-version和current-version分别删除相同的，保留不同的。就是最后变化的部分
         for i in temp_pre_pos:
@@ -323,33 +323,10 @@ class CreateModel:
                 varied_position.append(i)
         print("varied_pos:")
         for i in varied_position:
-            print("i:", i)
+            print("变化的Position:", i)
         # 把currrent_pos赋值给pre_version
         self.position = current_position
         return varied_position
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # ---------------------------------------------------------------------------------------
 
