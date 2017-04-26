@@ -194,6 +194,7 @@ class CreateModel:
             # if counter > 10:
             #     break
             counter += 1
+            print("data:", data)
             obj = self.create_class_obj(data)
             print("服务：", data.get("服务ID"))
             # print("实例对象:", obj.__class__.__name__, ", 实例：", obj.get_id())
@@ -465,7 +466,9 @@ class CreateModel:
         if service in ("META", "Software Engineering", "Code Review",
                        "Web Applications", "Ubuntu",
                        "Server Fault", "Information Security",
-                       "Ask Ubuntu", "German Language", "Biology"):
+                       "Ask Ubuntu", "German Language", "Biology",
+                       "Religion"
+                       ):
             return "FAQ"
         if service in ("Super User", "English Language & Usage",
                        "Drupal Answers", "English Language Learners",
@@ -473,11 +476,12 @@ class CreateModel:
                        "Programming Puzzles", "skeptics", "TEX",
                        "Science Fiction & Fantasy", "Workplace",
                        "Christianity", "Unix & Linux", "Bicycles",
-                       "Webmasters", "Arqade", "Movies & TV"):
+                       "Webmasters", "Arqade", "Movies & TV", "Travel",
+                       "Personal Productivity"):
             return "YL"
         if service in ("blogs", "Blog", "Blogs", "blog", "Quora", "Pinboard"):
             return "Blog"
-        if service in ("Github", "Gitlib", "Bitbucket"):
+        if service in ("Github", "Gitlib", "Bitbucket", "jessehouwing"):
             return "Git"
         if service in ("Youtube", "Last.fm", "flickr", "Instagram", "vimeo"):
             return "Media"
@@ -542,7 +546,7 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "data_status"  # 读取数据库名字
-    collection_name = "U04"  # 读取数据集合的名字
+    collection_name = "U08"  # 读取数据集合的名字
     net_db = "varied_net"  # 变化的个人数据网络-数据库
     # Part2: 创建初始个人数据网络,选取时间序列中前k条记录作为构建网络的基础结构
     k_no = 50

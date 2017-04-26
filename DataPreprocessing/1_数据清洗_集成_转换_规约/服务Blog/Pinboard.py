@@ -116,7 +116,7 @@ class DataProcess:
 
 # ---------------------------------------------------------------------------------------
 
-    # 批量插入数据
+    # 格式化标准时间
     @classmethod
     def format_datetime(cls, element):
         element = element.replace("January", "01")
@@ -145,9 +145,10 @@ class DataProcess:
         element = element.replace("Dec", "12")
         element = element.replace("T", " ")
         element = element.replace("+00:00", "")
+        element = element.replace(" &nbsp; ", " ")
         print("new element:", element)
         # 格式化的字符串转换成Datetime, 具体看字符串的格式 "%d %m %Y %H:%M:%S"
-        dt = datetime.datetime.strptime(element, "%Y-%m-%d %H:%M:%S")
+        dt = datetime.datetime.strptime(element, "%Y.%m.%d %H:%M:%S")
         date_time = str(dt)
         return date_time
 
@@ -271,10 +272,10 @@ for case in Switch(v):
 
 def main_operation():
     """Part1: 初始化参数"""
-    file_path = 'data/bloGS.csv'  # 读取文件路径和文件名
+    file_path = '../../data/Pinboard.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U05"  # 集合的名字
+    collection_name = "U08"  # 集合的名字
     flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
     dp1 = DataProcess(file_path, db_name, collection_name,
                       ip_address, flag_insert)

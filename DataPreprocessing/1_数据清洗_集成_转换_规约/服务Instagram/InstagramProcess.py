@@ -6,7 +6,9 @@ import pandas as pd
 import DataPreprocessing.NaturalLanProcess as dpt4  # 引入自然语言处理
 import pymongo
 from datetime import datetime
+from datetime import timedelta
 import datetime
+import re
 
 
 class DataProcess:
@@ -49,8 +51,12 @@ class DataProcess:
             service_id = ""  # 服务ID
             date_time = ""  # 格式化时间
             time_stamp = ""  # 时间戳
+            activity = ""  # 行为
             content = ""  # 内容
             key_words = []  # 内容关键词（自然语言做的分词）
+            retweet = 0  # 转推数
+            like = 0  # 喜欢数
+            reply_num = 0  # 回复数
             row = data.iloc[i]  # 数据元组
             # print("type:", type(row), "row: ", row)
             for j in data.columns:
@@ -68,23 +74,47 @@ class DataProcess:
                     print(j, ":", service_id)
                 if j == "时间":
                     if str(data.iloc[i][j]) == "nan":
-                        # print("空值", row, j, "element：", data.iloc[i][j])
                         self.nan_list.append(row)
                         continue
-                    print(j, ":", element)
-                    # 格式化时间
-                    date_time = self.format_datetime(element)
-                    print("格式化时间date_time:", date_time)
-                    # 转化成时间戳
-                    timeArray = time.strptime(date_time, "%Y-%m-%d %H:%M:%S")
-                    # 2将"2011-09-28 10:00:00"转化为时间戳
-                    timestamp = int(time.mktime(timeArray))
-                    print("timestamp:", timestamp)
-                    time_stamp = timestamp
-                if j == "行为":
-                    activity = element
-                    print(j, ":", activity)
-                if j == "内容" or j == "title":
+                    if self.match_timestamp(element):
+                        print("10位数字的时间戳")
+                        time_stamp = int(self.match_timestamp(element))
+                        # 将时间戳timestamp转换成格式化的字符串Datetime
+                        l_time = time.localtime(time_stamp)
+                        date_time = time.strftime("%Y-%m-%d %H:%M:%S", l_time)
+                        print("date_time:", date_time, ", timestamp:", time_stamp)
+                    else:
+                        if "上午" in element:
+                            element = element.replace("上午", "")
+                            # 格式化的字符串转换成Datetime
+                            print("时间：", element)
+                            dt = datetime.datetime.strptime(element, "%H:%M - %Y年%m月%d日")
+                            date_time = str(dt)
+                            print("时间-：", date_time)
+                            # 转化成时间戳
+                            timeArray = time.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+                            # 2将"2011-09-28 10:00:00"转化为时间戳
+                            timestamp = int(time.mktime(timeArray))
+                            print("timestamp:", timestamp)
+                            time_stamp = timestamp
+                        if "下午" in element:
+                            element = element.replace("下午", "")
+                            # 格式化的字符串转换成Datetime
+                            dt = datetime.datetime.strptime(element, "%H:%M - %Y年%m月%d日")
+                            print("dt:", dt)
+                            # 加上12小时
+                            aDay = timedelta(days=0.5)
+                            now = dt + aDay
+                            print("new now:", now)
+                            element = str(now)
+                            date_time = element
+                            # 再变成时间戳
+                            timeArray = time.strptime(element, "%Y-%m-%d %H:%M:%S")
+                            # 2将"2011-09-28 10:00:00"转化为时间戳
+                            timestamp = int(time.mktime(timeArray))
+                            print("timestamp:", timestamp)
+                            time_stamp = timestamp
+                if j == "title":
                     # 判断是否有空值
                     if str(data.iloc[i][j]) == "nan":
                         # print("空值", row, j, "element：", data.iloc[i][j])
@@ -96,13 +126,14 @@ class DataProcess:
                     print("keywords:", temp_keywords)
                     key_words = key_words + temp_keywords
                 # end if
-            # 输出每一行的input_list
             _id = self.get_next_counter()
+            print("_id:", _id)
+            # 输出每一行的input_list
             insert_text = {"uid": self.collection_name, "用户ID": user_id,
                            "服务ID": service_id, "时间": date_time,
                            "timestamp": time_stamp, "内容": content,
-                           "keywords": key_words, "_id": _id
-                           }
+                           "keywords": key_words,
+                           "_id": _id}
             print("row_input_list:", insert_text)
             # 插入数据库
             if self.flag_insert == "1":
@@ -116,55 +147,19 @@ class DataProcess:
 
 # ---------------------------------------------------------------------------------------
 
-    # 批量插入数据
+    """
+    正则表达式，匹配10位数字的时间戳
+    """
     @classmethod
-    def format_datetime(cls, element):
-        element = element.replace("January", "01")
-        element = element.replace("February", "02")
-        element = element.replace("March", "03")
-        element = element.replace("April", "04")
-        element = element.replace("May", "05")
-        element = element.replace("June", "06")
-        element = element.replace("July", "07")
-        element = element.replace("August", "08")
-        element = element.replace("September", "09")
-        element = element.replace("October", "10")
-        element = element.replace("November", "11")
-        element = element.replace("December", "12")
-        element = element.replace("Jan", "01")
-        element = element.replace("Feb", "02")
-        element = element.replace("Mar", "03")
-        element = element.replace("Apr", "04")
-        element = element.replace("May", "05")
-        element = element.replace("Jun", "06")
-        element = element.replace("Jul", "07")
-        element = element.replace("Aug", "08")
-        element = element.replace("Sep", "09")
-        element = element.replace("Oct", "10")
-        element = element.replace("Nov", "11")
-        element = element.replace("Dec", "12")
-        print("new element:", element)
-        # 格式化的字符串转换成Datetime, 具体看字符串的格式 "%d %m %Y %H:%M:%S"
-        dt = datetime.datetime.strptime(element, "%d %m %y")
-        date_time = str(dt)
-        return date_time
-
-# ---------------------------------------------------------------------------------------
-
-    """
-    获取自增1的_id,默认与初始参数相同的数据库
-    """
-    def get_next_counter(self):
-        collection = self.db.get_collection("counters")
-        _id_obj = collection.find_and_modify(query={'_id': self.collection_name},
-                                             update={"$inc": {"no": +1}},
-                                             upsert=False,
-                                             full_response=True, new=True
-                                             )
-        # print("_id_obj:", _id_obj)
-        _id = _id_obj.get("value").get("no")
-        # print("_id:", _id)
-        return _id
+    def match_timestamp(cls, timestamp):
+        matchObj = re.search(r'(\d{10})', timestamp, re.M | re.I)
+        if matchObj:
+            timestamp = matchObj.group(0)
+            # print("timestamp : ", timestamp)
+            return timestamp
+        else:
+            # print("No match!!")
+            return None
 
 # ---------------------------------------------------------------------------------------
 
@@ -212,6 +207,23 @@ class DataProcess:
     def delete_all(self):
         self.collection.remove()
         self.client.close()
+
+# ----------------------------------------------------------------------------------------------------------
+
+    """
+    获取自增1的_id,默认与初始参数相同的数据库
+    """
+    def get_next_counter(self):
+        collection = self.db.get_collection("counters")
+        _id_obj = collection.find_and_modify(query={'_id': self.collection_name},
+                                             update={"$inc": {"no": +1}},
+                                             upsert=False,
+                                             full_response=True, new=True
+                                             )
+        # print("_id_obj:", _id_obj)
+        _id = _id_obj.get("value").get("no")
+        # print("_id:", _id)
+        return _id
 
 # ----------------------------------------------------------------------------------------------------------
 
@@ -269,11 +281,11 @@ for case in Switch(v):
 
 def main_operation():
     """Part1: 初始化参数"""
-    file_path = 'data/bloGS.csv'  # 读取文件路径和文件名
+    file_path = '../../data/照片墙.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U06"  # 集合的名字
-    flag_insert = "0"  # 1代表写入数据库, 其他代表不输入数据库
+    collection_name = "U08"  # 集合的名字
+    flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
     dp1 = DataProcess(file_path, db_name, collection_name,
                       ip_address, flag_insert)
     dp1.read_file()
@@ -286,4 +298,5 @@ if __name__ == "__main__":
     # 记录算法运行结束时间
     end_time = time.clock()
     print("Running time: %s Seconds" % (end_time - start_time))  # 输出运行时间(包括最后输出所有结果)
+
 

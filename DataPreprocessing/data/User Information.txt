@@ -1,8 +1,13 @@
-U01,Steven
-U02,meagar
-U03,Nick Craver
-U04,Idan Adar
-U05,Matt
+ID,Full_Name,Name,Linkedin
+U01,Steven,..,No
+U02,meagar,..,Yes
+U03,Nick Craver,..,No
+U04,Idan Adar,..,Yes
+U05,Matt,..,No
+U06,Sampson,Yes
+U07,Simone,Yes
+U08,Paul,Yes
+
 
 
 

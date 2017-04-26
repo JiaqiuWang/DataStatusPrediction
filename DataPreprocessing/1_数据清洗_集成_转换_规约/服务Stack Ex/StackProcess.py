@@ -5,7 +5,6 @@ import time
 import pandas as pd
 import DataPreprocessing.NaturalLanProcess as dpt4  # 引入自然语言处理
 import pymongo
-import re
 
 
 class DataProcess:
@@ -50,11 +49,17 @@ class DataProcess:
             time_stamp = ""  # 时间戳
             activity = ""  # 行为
             content = ""  # 内容
-            title = ""  # 标题
             key_words = []  # 内容关键词（自然语言做的分词）
+            title_text = ""  # 标题
+            star_badge = ""  # 奖励
             row = data.iloc[i]  # 数据元组
+            # print("type:", type(row), "row: ", row)
             for j in data.columns:
                 j = str(j)
+                # if str(data.iloc[i][j]) == "nan":
+                #     print("空值", row, j, "element：", data.iloc[i][j])
+                #     self.nan_list.append(row)
+                #     continue
                 element = str(data.iloc[i][j])
                 if j == "用户ID":
                     user_id = element
@@ -67,29 +72,16 @@ class DataProcess:
                         # print("空值", row, j, "element：", data.iloc[i][j])
                         self.nan_list.append(row)
                         continue
-                    element = self.match_date_time(element)
-                    element = element.replace("Jan", "01")
-                    element = element.replace("Feb", "02")
-                    element = element.replace("Mar", "03")
-                    element = element.replace("Apr", "04")
-                    element = element.replace("May", "05")
-                    element = element.replace("Jun", "06")
-                    element = element.replace("Jul", "07")
-                    element = element.replace("Aug", "08")
-                    element = element.replace("Sep", "09")
-                    element = element.replace("Oct", "10")
-                    element = element.replace("Nov", "11")
-                    element = element.replace("Dec", "12")
-                    print(j, ":", element)
+                    element = element.replace("Z", "")
+                    date_time = element
+                    print(j, ":", date_time)
                     # 将格式化时间转换成时间戳10位
                     # 1中间过程，一般都需要将字符串转化为时间数组
-                    timeArray = time.strptime(element, "%m %d, %Y")
+                    timeArray = time.strptime(element, "%Y-%m-%d %H:%M:%S")
                     # 2将"2011-09-28 10:00:00"转化为时间戳
-                    time_stamp = int(time.mktime(timeArray))
-                    # 将时间戳timestamp转换成格式化的字符串Datetime
-                    l_time = time.localtime(time_stamp)
-                    date_time = time.strftime("%Y-%m-%d %H:%M:%S", l_time)
-                    print("date_time:", date_time, ", timestamp:", time_stamp)
+                    timestamp = int(time.mktime(timeArray))
+                    print("timestamp:", timestamp, " type:", type(timestamp))
+                    time_stamp = timestamp
                 if j == "行为":
                     activity = element
                     print(j, ":", activity)
@@ -100,9 +92,15 @@ class DataProcess:
                     print("keywords:", temp_keywords)
                     key_words += temp_keywords
                 if j == "title":
-                    title = element
-                    print(j, ":", title)
-                    temp_keywords = dpt4.main(element)  # keywords是一个List结构
+                    title_text = element
+                    print(j, ":", title_text)
+                    temp_keywords = dpt4.main(title_text)  # keywords是一个List结构
+                    print("keywords:", temp_keywords)
+                    key_words += temp_keywords
+                if j == "标记":
+                    star_badge = element
+                    print(j, ":", star_badge)
+                    temp_keywords = dpt4.main(star_badge)  # keywords是一个List结构
                     print("keywords:", temp_keywords)
                     key_words += temp_keywords
                 # end if
@@ -112,7 +110,8 @@ class DataProcess:
             insert_text = {"uid": self.collection_name, "用户ID": user_id,
                            "服务ID": service_id, "时间": date_time,
                            "timestamp": time_stamp, "activity": activity, "内容": content,
-                           "keywords": key_words, "_id": _id, "title": title}
+                           "keywords": key_words, "title": title_text, "标记": star_badge,
+                           "_id": _id}
             print("row_input_list:", insert_text)
             # 插入数据库
             if self.flag_insert == "1":
@@ -123,23 +122,6 @@ class DataProcess:
             for var_nan in self.nan_list:
                 print("NaN row:", var_nan)
             print("空值的个数：", len(self.nan_list))
-
-# ---------------------------------------------------------------------------------------
-
-    """
-    正则表达式匹配，日期时间
-    """
-    @classmethod
-    def match_date_time(cls, element):
-        matchObj = re.search(r'(\D{3} \d{1,2}, \d{4})', element, re.M | re.I)
-        if matchObj:
-            # print("matchObj.group() :", matchObj.group(0))
-            # print ("matchObj.group(1) : ", matchObj.group(1))
-            # # print ("matchObj.group(2) : ", matchObj.group(2))
-            return matchObj.group(0)
-        else:
-            # print("No match!!")
-            return None
 
 # ---------------------------------------------------------------------------------------
 
@@ -266,10 +248,10 @@ for case in Switch(v):
 
 def main_operation():
     """Part1: 初始化参数"""
-    file_path = 'data/upload.csv'  # 读取文件路径和文件名
+    file_path = '../../data/评论.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U04"  # 集合的名字
+    collection_name = "U08"  # 集合的名字
     flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
     dp1 = DataProcess(file_path, db_name, collection_name,
                       ip_address, flag_insert)
@@ -283,28 +265,5 @@ if __name__ == "__main__":
     # 记录算法运行结束时间
     end_time = time.clock()
     print("Running time: %s Seconds" % (end_time - start_time))  # 输出运行时间(包括最后输出所有结果)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
