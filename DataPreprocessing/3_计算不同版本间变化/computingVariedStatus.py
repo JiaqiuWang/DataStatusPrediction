@@ -150,6 +150,7 @@ class CreateModel:
                 print("i-:", i)
                 if i.get("stamp_from") <= timestamp <= i.get("stamp_to"):
                     # print("i&:", i)
+                    print("initial pos:", i)
                     self.position.append(i)
                 if i.get("to") == "now":
                     current_time = int(time.time())
@@ -173,8 +174,10 @@ class CreateModel:
         cursors = collection.find({"uid": self.collection_name}).sort([("stamp_from", 1)])
         # print("cursor:", cursors.count(), ", type:", type(cursors.count()))
         if cursors.count() == 0:
+            print("没有 pos")
             return False
         else:
+            print("YOU POS")
             return cursors
 
 # ---------------------------------------------------------------------------------------
@@ -191,7 +194,7 @@ class CreateModel:
         cursors = self.collection.find().skip(self.k_no)
         counter = 0  # 计数器
         for data in cursors:
-            # if counter > 10:
+            # if counter > 30:
             #     break
             counter += 1
             print("data:", data)
@@ -395,6 +398,19 @@ class CreateModel:
 # ---------------------------------------------------------------------------------------
 
     """
+    将时间戳转换成时间
+    """
+    def clear_all(self):
+        # 1.删除varied_net数据库中的U0X用户的集合
+        collection = self.net_db.get_collection(self.collection_name)
+        self.delete_one_collection(collection)
+        # 2.将auto_incre 1数据表格归零
+        count_col = self.net_db.get_collection("counters")
+        count_col.update({"_id": self.collection_name}, {"$set": {"no": 0}})
+
+# ---------------------------------------------------------------------------------------
+
+    """
     数据库操作
     """
     # 写入MongoDB数据库
@@ -448,9 +464,10 @@ class CreateModel:
             self.client.close()
 
     # 删除所有数据
-    def delete_all(self):
-        self.collection.remove()
-        self.client.close()
+    @classmethod
+    def delete_one_collection(cls, col):
+        col.remove()
+        # self.client.close()
 
 # ----------------------------------------------------------------------------------------------------------
 
@@ -546,15 +563,17 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "data_status"  # 读取数据库名字
-    collection_name = "U08"  # 读取数据集合的名字
+    collection_name = "U02"  # 读取数据集合的名字
     net_db = "varied_net"  # 变化的个人数据网络-数据库
     # Part2: 创建初始个人数据网络,选取时间序列中前k条记录作为构建网络的基础结构
     k_no = 50
     # 所有的参数初始化，并建立类的对象
     # 文本相似度比率
-    ratio = 0.5
+    ratio = 0.6
     cm1 = CreateModel(db_name, collection_name, ip_address, k_no, ratio, net_db)
     cm1.initial_data_status()
+    # 清空数据表格
+    cm1.clear_all()
     # 计算初始数据网络之后的数据网络和联系
     cm1.compute_data_network()
     # cm1.get_first_stamp()  # 获取第一条时间戳

@@ -59,8 +59,13 @@ class FrequentVariedStatus:
         collection = self.db.get_collection(self.uid)
         cursors = collection.find()
         for i in cursors:
-            if i.get("connect")[0]:
-                print("relation:", i.get("connect")[0].get("relation"))
+            # if i.get("connect")[0]:
+            #     print("relation:", i.get("connect")[0].get("relation"))
+            if i.get("varied_pos"):
+                print("varied_pos:", i.get("varied_pos"))
+                print("relation：", i.get("relation"))
+                print("service:", i.get("service"))
+                print("")
 
             #
             #
