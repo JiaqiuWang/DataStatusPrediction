@@ -29,7 +29,7 @@ class CreateModel:
         self.first_stamp = 0  # 初始时间戳
         self.k_no = k_no  # 初始数据网络包含的文档数
         self.ratio = ratio
-        self.list_network = []  # 存放初始个人数据网络,包括节点
+        self.list_network = []  # 存放初始个人数据网络,包括节点,存放实例对象
         self.list_network_relation = []  # 存放关系
         self.position = []  # 存放linkedin个人静态数据节点的列表
         self.flag = False  # 判断是否存在Linkedin静态数据
@@ -116,17 +116,19 @@ class CreateModel:
                         self.list_network_relation.append(dict_relation)
 
         # self.list_network.extend(self.list_network_relation)
+        # 1.节点
         if self.list_network:
             for i in range(len(self.list_network)):
                 print("i:", i, ", list_network:", self.list_network[i])
         else:
             print("list_network is empty!")
+        # 2.联系
         if self.list_network_relation:
             for i in range(len(self.list_network_relation)):
                 print("i:", i, ", list_network:", self.list_network_relation[i])
         else:
             print("list_network_relation is empty!")
-        # 输出用户职位数据 linkedin
+        # 3.输出用户职位数据 linkedin
         if self.position:
             for i in range(len(self.position)):
                 print("i:", ", position:", self.position[i])
@@ -194,8 +196,8 @@ class CreateModel:
         cursors = self.collection.find().skip(self.k_no)
         counter = 0  # 计数器
         for data in cursors:
-            # if counter > 30:
-            #     break
+            if counter > 30:
+                break
             counter += 1
             print("data:", data)
             obj = self.create_class_obj(data)
@@ -215,7 +217,7 @@ class CreateModel:
             if self.flag:
                 # dict_varied变量是List类型
                 dict_varied = self.compute_updating_position(obj)
-            if dict_relation or len(dict_varied) != 0:
+            if len(dict_relation) != 0 or len(dict_varied) != 0:
                 print("dict_relation:", dict_relation)
                 new_LNR.clear()
                 new_LNR.append(dict_relation)
@@ -228,18 +230,28 @@ class CreateModel:
                               }
                 print("input_text:", input_text)
                 self.insert_db(input_text)
-                new_obj.clear()
                 new_obj_dict.clear()
                 list_service.clear()
+                # end 1: 将新新生成的若干实例对象，存储到前一个版本的实例网络中，即self.list_network
+                for j in range(len(new_obj)):
+                    self.list_network.append(new_obj[j])
+                new_obj.clear()  # 清空
+                # end 2: 将新产生的联系,添加到上一个版本的联系队列里面，形成下一个版本的前一个版本
+                for item in dict_relation:
+                    self.list_network_relation.append(item)
+                dict_relation.clear()
             print("*-*-*-*-*-*-*-*-*-*-*-*")
             new_LNR.append(dict_relation)  # 新关系
+
 
 # ---------------------------------------------------------------------------------------
 
     """
-    计算变化
+    计算联系的变化
     """
     def compute_updating_relation(self, obj):
+        list_rela = []
+        print("新个人数据网络的实例个数：", len(self.list_network))
         for i in range(len(self.list_network)):
             iter_obj = self.list_network[i]  # 迭代的对象
             original_content = obj.get_content()
@@ -261,17 +273,17 @@ class CreateModel:
                 # obj新插入的对象； iter_obj是老对象
                 # print("新对象对应的Class:", obj.__class__.__name__,
                 #       ", type:", type(obj.__class__.__name__))
-
                 # 获取联系
-                relation = cm.get_relation(iter_obj.__class__,
-                                           obj.__class__)
+                relation = cm.get_relation(iter_obj.__class__, obj.__class__)
                 # 存入初始个人数据网络，字典数据结构
                 dict_relation = {"pre_id": iter_obj.get_id(), "relation": relation, "post_id": obj.get_id(),
                                  "pre_Class": iter_obj.__class__.__name__,
                                  "post_Class": obj.__class__.__name__, "pre_Activity": iter_obj.get_activity(),
                                  "post_Activity": obj.get_activity()}
+                # 将每一个新联系加载到队列中
                 print("新联系:", dict_relation)
-                return dict_relation
+                list_rela.append(dict_relation)
+        return list_rela
 
 # ---------------------------------------------------------------------------------------
 
@@ -563,19 +575,20 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "data_status"  # 读取数据库名字
-    collection_name = "U02"  # 读取数据集合的名字
+    collection_name = "U04"  # 读取数据集合的名字
     net_db = "varied_net"  # 变化的个人数据网络-数据库
     # Part2: 创建初始个人数据网络,选取时间序列中前k条记录作为构建网络的基础结构
     k_no = 50
     # 所有的参数初始化，并建立类的对象
     # 文本相似度比率
-    ratio = 0.6
+    ratio = 0.4
     cm1 = CreateModel(db_name, collection_name, ip_address, k_no, ratio, net_db)
     cm1.initial_data_status()
     # 清空数据表格
     cm1.clear_all()
     # 计算初始数据网络之后的数据网络和联系
     cm1.compute_data_network()
+
     # cm1.get_first_stamp()  # 获取第一条时间戳
     # cm1.generate_RDF()  # 产生一个RDF模型
 
