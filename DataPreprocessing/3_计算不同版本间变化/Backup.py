@@ -75,7 +75,7 @@ class CreateModel:
                 break
             # 设置Linkedin用户状态数据的初始状态
             if counter == self.k_no - 1:
-                # print("最后一条记录！！")
+                print("最后一条记录！！")
                 self.flag = self.initialize_linked_status(data)
             obj = self.create_class_obj(data)  # 创建对象
             self.list_network.append(obj)
@@ -94,11 +94,11 @@ class CreateModel:
                         iter_obj.get_title()
                     if (iterate_content == "") or (iterate_content is None):
                         iterate_content = str(iter_obj.get_keywords())
-                    # print("original_content:", original_content)
-                    # print("iter_cont:", iterate_content)
+                    print("original_content:", original_content)
+                    print("iter_cont:", iterate_content)
                     # 计算两个不同文本的相似性
                     rate = Levenshtein.ratio(original_content, iterate_content)
-                    # print("rate:", rate)
+                    print("rate:", rate)
                     # 判断如果相似率大于阈值，则存入个人数据网络中
                     if rate >= self.ratio:
                         # obj新插入的对象； iter_obj是老对象
@@ -144,15 +144,15 @@ class CreateModel:
     """
     def initialize_linked_status(self, document):
         timestamp = document.get("timestamp")
-        # print("_id:", document.get("_id"), ", timestamp:", timestamp)
+        print("_id:", document.get("_id"), ", timestamp:", timestamp)
         # 循环获取所有的linkedin所有状态，查找目前用户所处的状态
         cursor = self.if_there_exp()
         if cursor:
             for i in cursor:
-                # print("i-:", i)
+                print("i-:", i)
                 if i.get("stamp_from") <= timestamp <= i.get("stamp_to"):
                     # print("i&:", i)
-                    # print("initial pos:", i)
+                    print("initial pos:", i)
                     self.position.append(i)
                 if i.get("to") == "now":
                     current_time = int(time.time())
@@ -161,7 +161,7 @@ class CreateModel:
                         self.position.append(i)
             return True
         else:  # 如果不存在linked in 服务
-            # print("flag:", cursor)
+            print("flag:", cursor)
             return False
 
 # ---------------------------------------------------------------------------------------
@@ -176,10 +176,10 @@ class CreateModel:
         cursors = collection.find({"uid": self.collection_name}).sort([("stamp_from", 1)])
         # print("cursor:", cursors.count(), ", type:", type(cursors.count()))
         if cursors.count() == 0:
-            # print("没有 pos")
+            print("没有 pos")
             return False
         else:
-            # print("YOU POS")
+            print("YOU POS")
             return cursors
 
 # ---------------------------------------------------------------------------------------
@@ -199,12 +199,12 @@ class CreateModel:
             # if counter > 30:
             #     break
             counter += 1
-            # print("data:", data)
+            print("data:", data)
             obj = self.create_class_obj(data)
-            # print("服务：", data.get("服务ID"))
+            print("服务：", data.get("服务ID"))
             # print("实例对象:", obj.__class__.__name__, ", 实例：", obj.get_id())
             data['object'] = obj.__class__.__name__
-            # print("实例对象:", data)
+            print("实例对象:", data)
             # print("obj_id:", obj.get_id())
             print("count:", counter)
             new_obj.append(obj)  # 将新的实例对象添加进
@@ -218,7 +218,7 @@ class CreateModel:
                 # dict_varied变量是List类型
                 dict_varied = self.compute_updating_position(obj)
             if len(dict_relation) != 0 or len(dict_varied) != 0:
-                # print("dict_relation:", dict_relation)
+                print("dict_relation:", dict_relation)
                 new_LNR.clear()
                 new_LNR.append(dict_relation)
                 # 插入数据库
@@ -228,7 +228,7 @@ class CreateModel:
                               "connect": new_LNR,
                               "varied_pos": dict_varied
                               }
-                # print("input_text:", input_text)
+                print("input_text:", input_text)
                 self.insert_db(input_text)
                 new_obj_dict.clear()
                 list_service.clear()
@@ -240,7 +240,7 @@ class CreateModel:
                 for item in dict_relation:
                     self.list_network_relation.append(item)
                 dict_relation.clear()
-            # print("*-*-*-*-*-*-*-*-*-*-*-*")
+            print("*-*-*-*-*-*-*-*-*-*-*-*")
             new_LNR.append(dict_relation)  # 新关系
 
 
@@ -251,7 +251,7 @@ class CreateModel:
     """
     def compute_updating_relation(self, obj):
         list_rela = []
-        # print("新个人数据网络的实例个数：", len(self.list_network))
+        print("新个人数据网络的实例个数：", len(self.list_network))
         for i in range(len(self.list_network)):
             iter_obj = self.list_network[i]  # 迭代的对象
             original_content = obj.get_content()
@@ -269,7 +269,7 @@ class CreateModel:
             # print("rate:", rate)
             # 判断如果相似率大于阈值，则存入个人数据网络中
             if rate >= self.ratio:
-                # print("rate:", rate)
+                print("rate:", rate)
                 # obj新插入的对象； iter_obj是老对象
                 # print("新对象对应的Class:", obj.__class__.__name__,
                 #       ", type:", type(obj.__class__.__name__))
@@ -281,7 +281,7 @@ class CreateModel:
                                  "post_Class": obj.__class__.__name__, "pre_Activity": iter_obj.get_activity(),
                                  "post_Activity": obj.get_activity()}
                 # 将每一个新联系加载到队列中
-                # print("新联系:", dict_relation)
+                print("新联系:", dict_relation)
                 list_rela.append(dict_relation)
         return list_rela
 
@@ -295,7 +295,7 @@ class CreateModel:
         # 1.计算当前所处的position
         timestamp = obj.get_timestamp()  # 当前记录的时间戳
         datetime = obj.get_datetime()  # 当前记录的时间
-        # print("该记录的时间：", datetime)
+        print("该记录的时间：", datetime)
         current_position = []
         # 获取集合
         collection = self.db.get_collection("exp")
@@ -309,13 +309,13 @@ class CreateModel:
                 current_position.append(i)
         # 计算变化， 前面的版本self.position,后面版本current_position
         temp_pre_pos = self.position.copy()
-        # print("pre-version:")
-        # for w in temp_pre_pos:
-        #     print(w)
-        # print("current-version:")
+        print("pre-version:")
+        for w in temp_pre_pos:
+            print(w)
+        print("current-version:")
         temp_cur_pos = current_position.copy()
-        # for t in temp_cur_pos:
-        #     print(t)
+        for t in temp_cur_pos:
+            print(t)
         same_temp_pos = []
         for j in temp_cur_pos:
             # print("current_pos:", j.get("_id"))
@@ -337,9 +337,9 @@ class CreateModel:
         for i in temp_cur_pos:
             if i.get("_id") not in same_temp_pos_ids:
                 varied_position.append(i)
-        # print("varied_pos:")
-        # for i in varied_position:
-        #     print("变化的Position:", i)
+        print("varied_pos:")
+        for i in varied_position:
+            print("变化的Position:", i)
         # 把currrent_pos赋值给pre_version
         self.position = current_position
         return varied_position
@@ -442,12 +442,12 @@ class CreateModel:
         # 查询所有
         cursors = self.collection.find().sort([("timestamp", 1)])
         for data in cursors:
-            # print("type:", type(data), ", data:", data)
+            print("type:", type(data), ", data:", data)
             # 更换_id
             new_id = self.get_next_id("data_status")
             data['_id'] = new_id
-            # print("new_data:", data)
-        # print("总记录数为：", cursors.count())
+            print("new_data:", data)
+        print("总记录数为：", cursors.count())
         self.client.close()
         return cursors.count()
 
@@ -575,13 +575,13 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "data_status"  # 读取数据库名字
-    collection_name = "U07"  # 读取数据集合的名字
+    collection_name = "U06"  # 读取数据集合的名字
     net_db = "varied_net"  # 变化的个人数据网络-数据库
     # Part2: 创建初始个人数据网络,选取时间序列中前k条记录作为构建网络的基础结构
     k_no = 50
     # 所有的参数初始化，并建立类的对象
     # 文本相似度比率
-    ratio = 0.65
+    ratio = 0.7
     cm1 = CreateModel(db_name, collection_name, ip_address, k_no, ratio, net_db)
     cm1.initial_data_status()
     # 清空数据表格

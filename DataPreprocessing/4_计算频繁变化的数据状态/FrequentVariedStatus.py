@@ -58,14 +58,15 @@ class FrequentVariedStatus:
         # 获取集合
         collection = self.db.get_collection(self.uid)
         cursors = collection.find()
+        count = 1
         for i in cursors:
-            # if i.get("connect")[0]:
-            #     print("relation:", i.get("connect")[0].get("relation"))
             if i.get("varied_pos"):
-                print("varied_pos:", i.get("varied_pos"))
+                print("count:", count)
+                print("varied_pos:", i.get("varied_pos")[0])
                 print("relation：", i.get("relation"))
                 print("service:", i.get("service"))
                 print("")
+                count += 1  # 计数器
 
             #
             #
@@ -140,7 +141,7 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "varied_net"  # 读取数据库名字
-    uid = "U02"  # 用户标识
+    uid = "U06"  # 用户标识
     collection_name = uid  # 读取数据集合的名字
     fvs = FrequentVariedStatus(ip_address, db_name, uid, collection_name)
     """Part2: """
@@ -155,4 +156,3 @@ if __name__ == "__main__":
     # 记录算法运行结束时间
     end_time = time.clock()
     print("Running time: %s Seconds" % (end_time - start_time))  # 输出运行时间(包括最后输出所有结果)
-
