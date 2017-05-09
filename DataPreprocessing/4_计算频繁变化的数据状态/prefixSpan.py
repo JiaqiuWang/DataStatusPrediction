@@ -1,3 +1,4 @@
+
 """
 选出不同数据模型版本之间时间间隔参数，然后计算临近2个数据模型变化
 """
@@ -6,27 +7,20 @@ import time
 import pymongo
 
 
-class FrequentVariedStatus:
+class PrefixSpanPos:
 
     # 类公有变量
 
     # 构造函数
-    def __init__(self, ip, db, uid, min_sup_pos, min_sup_rel,
-                 collection_name):
+    def __init__(self, ip, db, uid, min_sup_pos):
         self.ip = ip
         self.db_name = db
         self.uid = uid
         self.min_sup_pos = min_sup_pos
-        self.min_sup_rel = min_sup_rel
-        self.collection_name = collection_name
         # 全局变量-连接指定IP地址的数据库
         self.client = pymongo.MongoClient(self.ip, 27017)
         # 获取数据库
         self.db = self.client.get_database(self.db_name)  # 读取的数据库
-        # 获取集合
-        collection = self.db.get_collection(self.uid)
-        self.cursors_T = collection.find()
-        self.dict_FP = {}
 
     # 析构函数
     def __del__(self):
@@ -125,81 +119,17 @@ class FrequentVariedStatus:
     def delete_one_collection(cls, col):
         col.remove()
         # self.client.close()
-
-# ---------------------------------------------------------------------------------------
-
-    """
-    查找频繁2序列
-    """
-    def iterate_after_second_rel(self):
-        # 获取游标
-        self.cursors_T.rewind()
-        if self.cursors_T and self.dict_FP:
-            for k_i in self.dict_FP:
-                print(k_i)
-
-
-
-
-
-# ---------------------------------------------------------------------------------------
-
-    """
-    获取集合
-    """
-    def iterate_cursor_rel(self):
-        # 获取游标
-        self.cursors_T.rewind()
-        if self.cursors_T:
-            counter = 0  # 计数器
-            dict_sup = {}  # 支持度计数
-            for i in self.cursors_T:
-                # if counter >= 200:
-                #     break
-                if len(i.get("connect")[0]) == 0:
-                    continue
-                counter += 1
-                print("counter:", counter)
-                list_rel = []  # 不重复的变量计数器
-                list_rel.clear()
-                print("_id:", i.get("_id"), ", length:", len(i.get("connect")[0]),
-                      ", connect:", i.get("connect"))
-                for j in i.get("connect")[0]:
-                    print("j:", j)
-                    # print(type(j.get("pre_Class")), "_", j.get("relation"), "_", j.get("post_Class"))
-                    str_element = str(j.get("pre_Class")).strip() + "_" + \
-                                  str(j.get("relation")).strip() + "_" +\
-                                  str(j.get("post_Class")).strip()
-                    print(str_element)
-                    if str_element not in list_rel:
-                        list_rel.append(str_element)
-                        if str_element in dict_sup:
-                            dict_sup[str_element] += 1
-                        else:
-                            dict_sup[str_element] = 1
-
-            # end for
-            print("dict_sup:")
-            for k in dict_sup.keys():
-                print("k:", k, ", v:", dict_sup[k],
-                      ", support:", dict_sup[k]/counter)
-                if dict_sup[k]/counter >= self.min_sup_rel:
-                    print("FP:", k)
-                    self.dict_FP[k] = dict_sup[k]/counter
-
-        else:
-            print("cursor_real is None!")
-
 # ---------------------------------------------------------------------------------------
 
     """
     获取自增1的_id,
-    数据库：
+    数据库：data_status
+    文档：counters
     """
-    def iterate_cursor_pos(self):
-        # # 获取集合
-        # collection = self.db.get_collection(self.uid)
-        # cursors = collection.find()
+    def iterate_cursor(self):
+        # 获取集合
+        collection = self.db.get_collection(self.uid)
+        cursors = collection.find()
         count = 0
         list_varied = []  # 存放所有变化的pos字典的队列
         list_i = []  # 存放变化的每个文档，用户提取出service
@@ -209,7 +139,7 @@ class FrequentVariedStatus:
         list_fd = []  # 第二层频繁的department存储结构
         dict_pot = {}  # 第三城position职位的存储结构
         """第一层支持度计数"""
-        for i in self.cursors_T:
+        for i in cursors:
             if i.get("varied_pos"):
                 print("i:", i)
                 count += 1  # 计数器
@@ -284,7 +214,7 @@ class FrequentVariedStatus:
                             print("text:", text)
                             self.insert_db(db_name="CS", input_tuple=text)
 
-        print("size:", self.cursors_T.count())
+        print("size:", cursors.count())
 
 # ----------------------------------------------------------------------------------------------------------
 
@@ -322,59 +252,19 @@ class FrequentVariedStatus:
 
 # ----------------------------------------------------------------------------------------------------------
 
-"""
-类： frequent Pattern Sequence，数据对象，频繁模式的序列
-"""
-
-
-class FrequentP:
-
-    def __init__(self, sequence, support):
-        self.sequence = []
-        self.sequence = sequence
-        self.support = support
-        self.cfe = 0  # 置信度
-
-    def get_sequence(self):
-        return self.sequence
-
-    def set_sequence(self, value):
-        self.sequence = value
-
-    def get_support(self):
-        return self.support
-
-    def set_support(self, var_sup):
-        self.support = var_sup
-
-    def get_cfe(self):
-        return self.cfe
-
-    def set_cfe(self, value):
-        self.cfe = value
-
-# ----------------------------------------------------------------------------------------------------------
-
 
 def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
-    db_name = "varied_net"  # 读取数据库名字
-    uid = "U07"  # 用户标识
+    db_name = "CS"  # 读取数据库名字
+    uid = "U06"  # 用户标识
     min_sup_pos = 0.4  # 数据状态varied_pos的支持度阈值
-    min_sup_rel = 0.01  # 频繁变化联系relation的最小支持度
-    collection_name = uid  # 读取数据集合的名字
-    db_candidate_sequence = "CS"  # 存放pos候选序列
-    fvs = FrequentVariedStatus(ip_address, db_name, uid, min_sup_pos,
-                               min_sup_rel, collection_name)
+    psp = PrefixSpanPos(ip_address, db_name, uid, min_sup_pos)
     """Part2: """
     # 清空数据表格
-    fvs.clear_all(db_candidate_sequence)
-    # 查找pos变化的服务序列
-    # fvs.iterate_cursor_pos()
-    # 查找relation频繁变化的
-    fvs.iterate_cursor_rel()  # 查找频繁一序列
-    fvs.iterate_after_second_rel()   # 查找频繁2序列以后
+    # fvs.clear_all(db_candidate_sequence)
+    # fvs.iterate_cursor()
+
 
 if __name__ == "__main__":
     # 记录算法运行开始时间

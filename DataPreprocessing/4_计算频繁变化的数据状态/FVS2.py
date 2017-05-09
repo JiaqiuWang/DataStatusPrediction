@@ -138,10 +138,6 @@ class FrequentVariedStatus:
             for k_i in self.dict_FP:
                 print(k_i)
 
-
-
-
-
 # ---------------------------------------------------------------------------------------
 
     """
@@ -154,8 +150,8 @@ class FrequentVariedStatus:
             counter = 0  # 计数器
             dict_sup = {}  # 支持度计数
             for i in self.cursors_T:
-                # if counter >= 200:
-                #     break
+                if counter >= 300:
+                    break
                 if len(i.get("connect")[0]) == 0:
                     continue
                 counter += 1
@@ -370,11 +366,9 @@ def main_operation():
     """Part2: """
     # 清空数据表格
     fvs.clear_all(db_candidate_sequence)
-    # 查找pos变化的服务序列
-    # fvs.iterate_cursor_pos()
-    # 查找relation频繁变化的
-    fvs.iterate_cursor_rel()  # 查找频繁一序列
-    fvs.iterate_after_second_rel()   # 查找频繁2序列以后
+    # fvs.iterate_cursor_pos()  # 查找pos变化的服务序列
+    fvs.iterate_cursor_rel()  # 查找relation频繁变化的,查找频繁一序列
+    # fvs.iterate_after_second_rel()   # 查找频繁2序列以后
 
 if __name__ == "__main__":
     # 记录算法运行开始时间
