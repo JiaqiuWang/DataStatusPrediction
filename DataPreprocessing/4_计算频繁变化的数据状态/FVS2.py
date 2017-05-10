@@ -4,6 +4,7 @@
 
 import time
 import pymongo
+import pyfpgrowth
 
 
 class FrequentVariedStatus:
@@ -25,8 +26,11 @@ class FrequentVariedStatus:
         self.db = self.client.get_database(self.db_name)  # 读取的数据库
         # 获取集合
         collection = self.db.get_collection(self.uid)
-        self.cursors_T = collection.find()
+        self.cursors_T = collection.find(no_cursor_timeout=True)
         self.dict_FP = {}
+        self.fp_status = {}  # 使用fp-growth获取的频繁数据状态
+        self.total_elements = []  # 存放所有变化的事务集合，里面是一个个的元素，元素里面是一个个项/项集
+        self.fp_vts = []  # 频繁变化的数据状态的时间序列
 
     # 析构函数
     def __del__(self):
@@ -148,43 +152,179 @@ class FrequentVariedStatus:
         self.cursors_T.rewind()
         if self.cursors_T:
             counter = 0  # 计数器
-            dict_sup = {}  # 支持度计数
             for i in self.cursors_T:
-                if counter >= 300:
-                    break
+                # if counter >= 2500:
+                #     break
                 if len(i.get("connect")[0]) == 0:
                     continue
                 counter += 1
                 print("counter:", counter)
-                list_rel = []  # 不重复的变量计数器
-                list_rel.clear()
+                element_rel = []  # 存放每一个元素的队列
                 print("_id:", i.get("_id"), ", length:", len(i.get("connect")[0]),
-                      ", connect:", i.get("connect"))
+                      ", connect:", i.get("connect")[0])
                 for j in i.get("connect")[0]:
-                    print("j:", j)
-                    # print(type(j.get("pre_Class")), "_", j.get("relation"), "_", j.get("post_Class"))
+                    # print("j:", j)
                     str_element = str(j.get("pre_Class")).strip() + "_" + \
                                   str(j.get("relation")).strip() + "_" +\
                                   str(j.get("post_Class")).strip()
-                    print(str_element)
-                    if str_element not in list_rel:
-                        list_rel.append(str_element)
-                        if str_element in dict_sup:
-                            dict_sup[str_element] += 1
-                        else:
-                            dict_sup[str_element] = 1
-
+                    if str_element not in element_rel:
+                        element_rel.append(str_element)
+                self.total_elements.append(element_rel)
             # end for
-            print("dict_sup:")
-            for k in dict_sup.keys():
-                print("k:", k, ", v:", dict_sup[k],
-                      ", support:", dict_sup[k]/counter)
-                if dict_sup[k]/counter >= self.min_sup_rel:
-                    print("FP:", k)
-                    self.dict_FP[k] = dict_sup[k]/counter
+            print()
+            print("total_elements:")
+            # invoking function调用频繁模式增长算法 FP-Growth
+            self.fp_growth(self.total_elements)
+            dict_re = {"total_rel": self.total_elements, "fp_status": self.fp_status}
+            return dict_re
 
         else:
             print("cursor_real is None!")
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    频繁模式增长算法 FP-Growth, 参数total_elements是事务集合
+    """
+    def fp_growth(self, total_elements):
+        if len(total_elements) == 0:
+            print("total_element is Empty!")
+            return
+        min_sup = len(total_elements) / 100
+        patterns = pyfpgrowth.find_frequent_patterns(total_elements, min_sup)
+        self.fp_status = patterns
+        print("All patterns:", patterns)
+        # print("type-pattern:", type(patterns))
+        # for i in patterns.keys():
+        #     print("i:", list(i), ", sup:", patterns[i])
+        #     self.fp_status[list(i)] = patterns[i]  不可以List作为key
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    查找频繁变化的数据状态的时间序列,prefixSpan前缀模式投影算法
+    """
+    def fp_sequence_status(self, total_elements, fp_status):
+        if not fp_status:  # fp_status是字典
+            print("频繁变化的数据状态为空！")
+            return
+        if len(total_elements) == 0:  # total_elements 是队列嵌套队列
+            print("所有变化的事务集合 is Empty!")
+            return
+        print("type-fp-status:", type(fp_status))
+        if type(fp_status) == dict:
+            for i in self.fp_status.keys():
+                dict_part_fp = {}
+                print("i:", i, ", type:", type(i))
+                # 提取后缀数据序列 post_list
+                post_list = self.get_post_trans(tuple_item_set=i,
+                                                total_elements=total_elements)
+                print("post_list:", post_list)
+
+                print()
+                if len(post_list) != 0:  # 寻找局部频繁项
+                    for element in post_list:
+                        for item in element:
+                            # print("item:", item)
+                            if item in dict_part_fp.keys():
+                                dict_part_fp[item] += 1
+                            else:
+                                dict_part_fp[item] = 1
+                    for c_fp in dict_part_fp.keys():
+                        # print("c-fp:", c_fp)
+                        if dict_part_fp[c_fp]/len(dict_part_fp) > 0.5:
+                            new_fp_status = i + (c_fp,)
+                            print("new fp_status:", new_fp_status)
+                            self.fp_vts.append(list(new_fp_status))
+                            self.fp_sequence_growth(total_elements, new_fp_status)
+                    print()
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    递归调用
+    """
+    def fp_sequence_growth(self, total_elements, new_fp_status):
+        if len(new_fp_status) == 0:  # new_fp_status是tuple
+            print("new_fp_status是tuple is tuple")
+            return
+        if len(total_elements) == 0:  # total_elements 是队列嵌套队列
+            print("所有变化的事务集合 is Empty!")
+            return
+        dict_part_fp = {}  # 用于计算局部频繁项的字典
+        # 提取后缀数据序列 post_list
+        post_list = self.get_post_trans(tuple_item_set=new_fp_status,
+                                        total_elements=total_elements)
+        print("post_list:", post_list)
+        print()
+        if len(post_list) != 0:  # 寻找局部频繁项
+            for element in post_list:
+                for item in element:
+                    # print("item:", item)
+                    if item in dict_part_fp.keys():
+                        dict_part_fp[item] += 1
+                    else:
+                        dict_part_fp[item] = 1
+            for c_fp in dict_part_fp.keys():
+                # print("c-fp:", c_fp)
+                if dict_part_fp[c_fp] / len(dict_part_fp) > 0.5:
+                    new_fp_status += (c_fp,)
+                    print("new fp_status:", new_fp_status)
+                    self.fp_vts.append(list(new_fp_status))
+                    if len(new_fp_status) != 0:
+                        self.fp_sequence_growth(total_elements, new_fp_status)
+            print()
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    寻找包含该item的元素element，输入参数1.item,2.trans事务集合
+    输出：投影后的事务集合List
+    """
+    def get_post_trans(self, tuple_item_set, total_elements):
+        post_list = []
+        for i in total_elements:
+            flag = True
+            if len(tuple_item_set) >= len(i):
+                continue
+            # print("tuple_item_set:", tuple_item_set, ", element:", i)
+            for j in tuple_item_set:
+                if j not in i:
+                    flag = False
+                    break
+
+            if flag:
+                # print("flag:", flag)
+                # print("last_one:", tuple_item_set[-1])  # item_set中最后一个item
+                # print("element:", i)
+                index = i.index(tuple_item_set[-1])  # 在i中查找item的后缀
+                if index != len(i) - 1:
+                    one_element_list = i[index + 1:]
+                    # print("one_element_list:", one_element_list)
+                    post_list.append(one_element_list)
+        # print("post_list:", post_list)
+        return post_list
+
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    输出频繁变化的数据状态序列
+    """
+    def printout_vts(self):
+        for i in self.fp_vts:
+            print("sequence:", i)
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    寻找每个vts对应的服务序列
+    """
+    def get_fp_services(self):
+        for i in self.fp_vts:
+            print("sequence:", i)
+
+
 
 # ---------------------------------------------------------------------------------------
 
@@ -315,7 +455,6 @@ class FrequentVariedStatus:
         count_col = db.get_collection("counters")
         count_col.update({"_id": self.collection_name}, {"$set": {"no": 0}})
 
-
 # ----------------------------------------------------------------------------------------------------------
 
 """
@@ -363,12 +502,17 @@ def main_operation():
     db_candidate_sequence = "CS"  # 存放pos候选序列
     fvs = FrequentVariedStatus(ip_address, db_name, uid, min_sup_pos,
                                min_sup_rel, collection_name)
-    """Part2: """
+    """Part2: 调用方法"""
     # 清空数据表格
     fvs.clear_all(db_candidate_sequence)
     # fvs.iterate_cursor_pos()  # 查找pos变化的服务序列
-    fvs.iterate_cursor_rel()  # 查找relation频繁变化的,查找频繁一序列
-    # fvs.iterate_after_second_rel()   # 查找频繁2序列以后
+    dict_rel = fvs.iterate_cursor_rel()  # 查找relation频繁变化的,查找频繁变化的数据状态
+    # dict_re = {"total_rel": self.total_elements, "fp_status": self.fp_status}
+    fvs.fp_sequence_status(total_elements=dict_rel.get("total_rel"),
+                           fp_status=dict_rel.get("fp_status"))   # 查找频繁变化的数据状态的时间序列
+    # fvs.printout_vts()  # 输出频繁变化的数据状态序列
+    fvs.get_fp_services()  # 寻找每个vts对应的服务序列
+
 
 if __name__ == "__main__":
     # 记录算法运行开始时间

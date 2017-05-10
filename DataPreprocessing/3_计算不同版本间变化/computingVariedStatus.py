@@ -575,7 +575,7 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "data_status"  # 读取数据库名字
-    collection_name = "U07"  # 读取数据集合的名字
+    collection_name = "U08"  # 读取数据集合的名字
     net_db = "varied_net"  # 变化的个人数据网络-数据库
     # Part2: 创建初始个人数据网络,选取时间序列中前k条记录作为构建网络的基础结构
     k_no = 50
