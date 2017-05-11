@@ -1,11 +1,6 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-# author: Tianming Lu
-# adapted by: Nicolas Rangeon
 
 class PrefixSpan:
     def __init__(self, sequences, minSupport=0.1, maxPatternLength=10):
-
         minSupport = minSupport * len(sequences)
         self.PLACE_HOLDER = '_'
 
@@ -122,10 +117,10 @@ class PrefixSpan:
                             items[item] = 1
 
         f_list.extend([self.SequencePattern([[self.PLACE_HOLDER, k]], v, maxPatternLength, self.PLACE_HOLDER)
-                       for k, v in _items.iteritems()
+                       for k, v in _items.items()
                        if v >= threshold])
         f_list.extend([self.SequencePattern([[k]], v, maxPatternLength, self.PLACE_HOLDER)
-                       for k, v in items.iteritems()
+                       for k, v in items.items()
                        if v >= threshold])
 
         # todo: can be optimised by including the following line in the 2 previous lines
@@ -187,4 +182,28 @@ if __name__ == "__main__":
     model = PrefixSpan.train(sequences, minSupport=0.5, maxPatternLength=5)
     result = model.freqSequences().collect()
     for fs in result:
-        print('{}, {}'.format(fs.sequence, fs.freq))
+        # print("fs:", fs.freq)
+        print("fs:", fs.sequence, ", type:", type(fs.sequence),
+              "sup:", fs.freq)
+        # print('{}, {}'.format(fs.sequence, fs.freq))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

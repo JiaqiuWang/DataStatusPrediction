@@ -1,5 +1,6 @@
 """
 选出不同数据模型版本之间时间间隔参数，然后计算临近2个数据模型变化
+V5-11 17:10备份
 """
 
 import time
@@ -31,6 +32,7 @@ class FrequentVariedStatus:
         self.fp_status = {}  # 使用fp-growth获取的频繁数据状态
         self.total_elements = []  # 存放所有变化的事务集合，里面是一个个的元素，元素里面是一个个项/项集
         self.fp_vts = []  # 频繁变化的数据状态的时间序列
+        self.total_ele_service = []  # 存放所有变化的联系对应的服务序列 type:list, 里面每个是一个dict
 
     # 析构函数
     def __del__(self):
@@ -133,18 +135,6 @@ class FrequentVariedStatus:
 # ---------------------------------------------------------------------------------------
 
     """
-    查找频繁2序列
-    """
-    def iterate_after_second_rel(self):
-        # 获取游标
-        self.cursors_T.rewind()
-        if self.cursors_T and self.dict_FP:
-            for k_i in self.dict_FP:
-                print(k_i)
-
-# ---------------------------------------------------------------------------------------
-
-    """
     获取集合
     """
     def iterate_cursor_rel(self):
@@ -153,8 +143,8 @@ class FrequentVariedStatus:
         if self.cursors_T:
             counter = 0  # 计数器
             for i in self.cursors_T:
-                # if counter >= 2500:
-                #     break
+                if counter >= 2500:
+                    break
                 if len(i.get("connect")[0]) == 0:
                     continue
                 counter += 1
@@ -169,7 +159,14 @@ class FrequentVariedStatus:
                                   str(j.get("post_Class")).strip()
                     if str_element not in element_rel:
                         element_rel.append(str_element)
-                self.total_elements.append(element_rel)
+                dict_each_id_ele_ser = {}
+                print("element_rel:", tuple(element_rel))
+                services = self.de_multi_element(i.get("service"))
+                print("service:", services)
+                dict_each_id_ele_ser[tuple(element_rel)] = services  # 放进临时字典变量
+                print("dict_each_id_lel_ser:", dict_each_id_ele_ser)
+                self.total_ele_service.append(dict_each_id_ele_ser)  # 装进全局变量中保存里面
+                self.total_elements.append(element_rel)  # 保存所有的关系element
             # end for
             print()
             print("total_elements:")
@@ -321,10 +318,175 @@ class FrequentVariedStatus:
     寻找每个vts对应的服务序列
     """
     def get_fp_services(self):
+        print("寻找每个vts对应的服务序列")
         for i in self.fp_vts:
-            print("sequence:", i)
+            list_cs = []
+            print("VTS:", i)
+            for j in self.total_ele_service:
+                # print("type-j:", type(j), ", j:", j)
+                for k in j.keys():
+                    # print("k:", k)
+                    for item in k:
+                        # print("item:", item)
+                        if item in i:
+                            # print("service:", j[k])
+                            list_cs.append(j[k])
+            # 计算该sequence对应的频繁服务序列
+            # print("prefixspan-")
+            # print("list_cs:", list_cs)
+            self.prefixspan_service(list_cs)
 
 
+# ---------------------------------------------------------------------------------------
+
+    """
+    prefixSpan前缀投影模式增长算法，挖掘频繁时间序列['Stack Overflow', 'Youtube', 'Stack Overflow', 'Twitter', 'Github']
+    ['Github', 'Stack Overflow', 'Github']
+    """
+    def prefixspan_service(self, list_sequence):
+        fp_one_sequence = []  # 存放调用一次的所有
+        dict_fp_1s = {}  # 频繁一序列的计数器
+        # 寻找频繁一序列
+        # 将list_sequence变成一个不重复的序列
+        list_dis_seq = self.get_dis_dul_sequence(list_sequence)
+        # print("list_dis_dup:", list_dis_seq)
+        for element in list_dis_seq:
+            for item in element:
+                if item in dict_fp_1s.keys():
+                    dict_fp_1s[item] += 1
+                else:
+                    dict_fp_1s[item] = 1
+        for k in dict_fp_1s.keys():
+            # print("key:", k, ", sup:", dict_fp_1s[k],
+            #       ", size-list-sequence:", len(list_sequence),
+            #       ", rel_sup:", dict_fp_1s[k]/len(list_sequence))
+            if dict_fp_1s[k] >= 30:
+                fp_one_sequence.append(k)
+        # print("频繁一序列:")
+        # for w in fp_one_sequence:
+        #     print("w:", w)
+        # 递归扫描投影数据库中的局部频繁项，然后形成新的序列
+        self.prefixspan_second_service(fp_one_sequence, list_sequence)
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    prefixspan_service_second_service
+    参数：prefix_fp是前缀服务序列的队列
+    参数：list_sequence是全部的服务序列的队列
+    """
+    def prefixspan_second_service(self, prefix_fp, list_sequence):
+        if len(prefix_fp) == 0:
+            print("prefix_fp是前缀服务序列的队列 is Empty")
+            return
+        if len(list_sequence) == 0:
+            print("list_sequence是全部的服务序列的队列 is Empty")
+            return
+        for each_prefix_s in prefix_fp:
+            # print("each_prefix_s:", each_prefix_s, ", type:", type(each_prefix_s))
+
+            # 提取每一个的each_prefix_s后缀序列
+            dict_part_fp = {}  # 用于计算局部频繁项的字典
+            post_list = self.get_post_trans(tuple_item_set=(each_prefix_s,),
+                                            total_elements=list_sequence)
+            # print("post-list:", post_list)
+            if len(post_list) != 0:
+                for element in post_list:
+                    de_dup_item = []  # 一个元素中去掉重复item计数的队列
+                    for item in element:
+                        if item not in de_dup_item:
+                            de_dup_item.append(item)
+                            if item in dict_part_fp.keys():
+                                dict_part_fp[item] += 1
+                            else:
+                                dict_part_fp[item] = 1
+                for c_fp in dict_part_fp.keys():
+                    new_prefix_sp = [each_prefix_s]
+                    if c_fp != "Stack Overflow":
+                        dict_part_fp[c_fp] *= 5
+                    if dict_part_fp[c_fp] >= 40:
+                        new_prefix_sp.append(c_fp)
+                        # print("局部频繁项：")
+                        # print("c_fp:", c_fp, ", sup:", dict_part_fp[c_fp])
+                        print("频繁服务序列：", self.get_no_same_item_seq(new_prefix_sp))
+                        self.recur_third_post_prefix(new_prefix_sp, list_sequence)
+
+# ---------------------------------------------------------------------------------------
+
+    """ 递归
+    recur_third_post_prefix
+    参数：list_prefix
+    参数：list_sequence是全部的服务序列的队列
+    """
+    def recur_third_post_prefix(self, list_prefix, list_sequence):
+        if len(list_prefix) == 0:  # new_fp_status是tuple
+            print("list_prefix is Empty")
+            return
+        if len(list_sequence) == 0:  # list_sequence 是队列嵌套队列
+            print("list_sequence is Empty!")
+            return
+        # print("new_prefix_sp", list_prefix)
+        dict_part_fp = {}  # 用于计算局部频繁项的字典
+        # 提取后缀数据序列 post_list
+        post_list = self.get_post_trans(tuple_item_set=tuple(list_prefix),
+                                        total_elements=list_sequence)
+        # print("post_list:", post_list)
+        if len(post_list) != 0:  # 寻找局部频繁项
+            for element in post_list:
+                de_dup_item = []  # 一个元素中去掉重复item计数的队列
+                for item in element:
+                    if item not in de_dup_item:
+                        de_dup_item.append(item)
+                        if item in dict_part_fp.keys():
+                            dict_part_fp[item] += 1
+                        else:
+                            dict_part_fp[item] = 1
+            for c_fp in dict_part_fp.keys():
+                if c_fp != "Stack Overflow":
+                    dict_part_fp[c_fp] *= 5
+                if dict_part_fp[c_fp] >= 40:
+                    list_prefix.append(c_fp)
+                    if len(list_prefix) >= 7:
+                        break
+                    print("频繁服务序列：", self.get_no_same_item_seq(list_prefix))
+                    self.recur_third_post_prefix(list_prefix, list_sequence)
+
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    不重复的序列
+    """
+    @classmethod
+    def get_no_same_item_seq(cls, list_sequence):
+        total_dis_list = []
+        pivot = ""
+        for i in range(len(list_sequence)):
+            if i == 0:
+                total_dis_list.append(list_sequence[i])
+                pivot = list_sequence[i]
+            else:
+                if list_sequence[i]:
+                    if list_sequence[i] != pivot:
+                        total_dis_list.append(list_sequence[i])
+                        pivot = list_sequence[i]
+        return total_dis_list
+
+# ---------------------------------------------------------------------------------------
+
+    """
+    不重复的序列
+    """
+    @classmethod
+    def get_dis_dul_sequence(cls, list_sequence):
+        total_dis_list = []
+        for element in list_sequence:
+            temp_list = []
+            for item in element:
+                if item not in temp_list:
+                    temp_list.append(item)
+                total_dis_list.append(temp_list)
+        return total_dis_list
 
 # ---------------------------------------------------------------------------------------
 
