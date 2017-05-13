@@ -143,8 +143,8 @@ class FrequentVariedStatus:
         if self.cursors_T:
             counter = 0  # 计数器
             for i in self.cursors_T:
-                if counter >= 2500:
-                    break
+                # if counter >= 2500:
+                #     break
                 if len(i.get("connect")[0]) == 0:
                     continue
                 counter += 1
@@ -672,8 +672,8 @@ def main_operation():
     # dict_re = {"total_rel": self.total_elements, "fp_status": self.fp_status}
     fvs.fp_sequence_status(total_elements=dict_rel.get("total_rel"),
                            fp_status=dict_rel.get("fp_status"))   # 查找频繁变化的数据状态的时间序列
-    # fvs.printout_vts()  # 输出频繁变化的数据状态序列
-    fvs.get_fp_services()  # 寻找每个vts对应的服务序列
+    fvs.printout_vts()  # 输出频繁变化的数据状态序列
+    # fvs.get_fp_services()  # 寻找每个vts对应的服务序列
 
 
 if __name__ == "__main__":
