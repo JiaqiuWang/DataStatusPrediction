@@ -1,6 +1,6 @@
 """
 个人数据集成模型, User, Stack, FAQ, YL, SNS, Blog, Git, Media,
- Relation, EC 10大数据类
+ Relation, EC, Design 10大数据类
 """
 
 # 用户类
@@ -45,6 +45,87 @@ class User:
 
     def set_job_exper(self, new_j):
         self.job_exper = new_j
+
+# ---------------------------------------------------------------------------
+
+# 设计工作类
+
+
+class Design:
+    # 构造函数
+    def __init__(self, _id, uid, u_name, datetime, timestamp, service,
+                 activity, title, content, keywords):
+        self._id = _id
+        self.uid = uid
+        self.u_name = u_name
+        self.datetime = datetime
+        self.timestamp = timestamp
+        self.service = service
+        self.activity = activity
+        self.title = title
+        self.content = content
+        self.keywords = keywords
+
+    def get_id(self):
+        return self._id
+
+    def set_id(self, value):
+        self._id = value
+
+    def get_uid(self):
+        return self.uid
+
+    def set_uid(self, new_uid):
+        self.uid = new_uid
+
+    def get_username(self):
+        return self.u_name
+
+    def set_username(self, new_name):
+        self.u_name = new_name
+
+    def get_datetime(self):
+        return self.datetime
+
+    def set_datetime(self, value):
+        self.datetime = value
+
+    def get_timestamp(self):
+        return self.timestamp
+
+    def set_timestamp(self, value):
+        self.timestamp = value
+
+    def get_service(self):
+        return self.service
+
+    def set_service(self, value):
+        self.service = value
+
+    def get_activity(self):
+        return self.activity
+
+    def set_activity(self, value):
+        self.activity = value
+
+    def get_title(self):
+        return self.title
+
+    def set_title(self, value):
+        self.title = value
+
+    def get_content(self):
+        return self.content
+
+    def set_content(self, value):
+        self.content = value
+
+    def get_keywords(self):
+        return self.keywords
+
+    def set_keywords(self, value):
+        self.keywords = value
+
 
 # ---------------------------------------------------------------------------
 
@@ -770,6 +851,8 @@ def get_class(value):
             return Relation
         if case('EC'):
             return EC
+        if case('Design'):
+            return Design
         if case():  # default, could also just omit condition or 'if True'
             print("something else!")
             return None
@@ -806,10 +889,33 @@ def get_relation(pre_class, post_class):
         if post_class is Media:  # (Media, Update, Media)
             relationship = "Update"
             return relationship
+        if post_class is Design:
+            relationship = "Design"
+            return relationship
         if post_class is EC:  # (Media, WB, EC) WB: want to buy
                     #  试听某段音乐，购买正版版权音乐；
                     # 看完某段视频内推荐的某书籍，笔记本电脑，在亚马逊上购买
             relationship = "WB"
+            return relationship
+
+    if pre_class is Design:
+        if post_class in (SNS, Media):
+            relationship = "Share to"
+            return relationship
+        if post_class in (Stack, FAQ, YL):
+            relationship = "Learn/Ask"
+            return relationship
+        if post_class is Blog:
+            relationship = "Record"
+            return relationship
+        if post_class is Git:
+            relationship = "VM"
+            return relationship
+        if post_class is EC:
+            relationship = 'sold'
+            return relationship
+        if post_class is Design:
+            relationship = "Update"
             return relationship
 
     if pre_class is Stack:
@@ -834,6 +940,9 @@ def get_relation(pre_class, post_class):
         if post_class is EC:  # (Stack, Learn, EC)
             relationship = "Learn"
             return relationship
+        if post_class is Design:
+            relationship = "Design"
+            return relationship
 
     if pre_class is FAQ:
         if post_class is FAQ:  # (FAQ, Update, FAQ)
@@ -856,6 +965,9 @@ def get_relation(pre_class, post_class):
             return relationship
         if post_class is EC:  # (FAQ, Learn, EC)
             relationship = "Learn"
+            return relationship
+        if post_class is Design:
+            relationship = "Design"
             return relationship
 
     if pre_class is YL:
@@ -880,6 +992,9 @@ def get_relation(pre_class, post_class):
         if post_class is EC:  # (YL, WB, EC)
             relationship = "WB"
             return relationship
+        if post_class is Design:
+            relationship = "Design"
+            return relationship
 
     if pre_class is SNS:
         if post_class is SNS:  # (SNS, Update, SNS)
@@ -899,6 +1014,9 @@ def get_relation(pre_class, post_class):
             return relationship
         if post_class is EC:  # (SNS, Like, EC)
             relationship = "Like"
+            return relationship
+        if post_class is Design:
+            relationship = "Design"
             return relationship
 
     if pre_class is Blog:
@@ -922,6 +1040,9 @@ def get_relation(pre_class, post_class):
             return relationship
         if post_class is EC:  # (Blog, Learn, EC)
             relationship = "Learn"
+            return relationship
+        if post_class is Design:
+            relationship = "Design"
             return relationship
 
     # 2：版本控制服务数据类
@@ -947,6 +1068,9 @@ def get_relation(pre_class, post_class):
         if post_class is EC:  # (Git, WB, EC)
             relationship = "WB"
             return relationship
+        if post_class is Design:
+            relationship = "Design"
+            return relationship
 
     # 1: 电子商务数据服务类
     if pre_class is EC:
@@ -967,6 +1091,9 @@ def get_relation(pre_class, post_class):
             return relationship
         if post_class is Media:  # (EC, Post, Media)
             relationship = "Post"
+            return relationship
+        if post_class is Design:
+            relationship = "Design"
             return relationship
 
 

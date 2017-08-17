@@ -673,7 +673,7 @@ def main_operation():
     fvs.fp_sequence_status(total_elements=dict_rel.get("total_rel"),
                            fp_status=dict_rel.get("fp_status"))   # 查找频繁变化的数据状态的时间序列
     fvs.printout_vts()  # 输出频繁变化的数据状态序列
-    # fvs.get_fp_services()  # 寻找每个vts对应的服务序列
+    fvs.get_fp_services()  # 寻找每个vts对应的服务序列
 
 
 if __name__ == "__main__":

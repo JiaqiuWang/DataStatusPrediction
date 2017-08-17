@@ -282,7 +282,7 @@ def main_operation():
     file_path = '../../data/G+.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U07"  # 集合的名字
+    collection_name = "U11"  # 集合的名字
     flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
     dp1 = DataProcess(file_path, db_name, collection_name,
                       ip_address, flag_insert)

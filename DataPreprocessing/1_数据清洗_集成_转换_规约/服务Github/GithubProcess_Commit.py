@@ -103,7 +103,7 @@ class DataProcess:
                     element = element.replace("Dec", "12")
                     print("new element:", element)
                     # 格式化的字符串转换成Datetime
-                    dt = datetime.datetime.strptime(element, "%d %m %Y %H:%M:%S")
+                    dt = datetime.datetime.strptime(element, "%Y-%m-%d %H:%M:%S")
                     date_time = str(dt)
                     print("时间：", date_time)
                     # 转化成时间戳
@@ -278,7 +278,7 @@ def main_operation():
     file_path = '../../data/创建提交.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U08"  # 集合的名字
+    collection_name = "U11"  # 集合的名字
     flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
     dp1 = DataProcess(file_path, db_name, collection_name,
                       ip_address, flag_insert)

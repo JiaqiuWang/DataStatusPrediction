@@ -15,7 +15,7 @@ class CreateModel:
 
     # 构造函数
     def __init__(self, db_name, collection_name, ip_address, k_no,
-                 ratio, net_db):
+                 ratio, net_db, kip):
         self.db_name = db_name
         self.collection_name = collection_name
         self.ip_address = ip_address
@@ -33,6 +33,7 @@ class CreateModel:
         self.list_network_relation = []  # 存放关系
         self.position = []  # 存放linkedin个人静态数据节点的列表
         self.flag = False  # 判断是否存在Linkedin静态数据
+        self.kip = kip  # 跳跃的记录数
 
     # 析构函数
     def __del__(self):
@@ -68,7 +69,7 @@ class CreateModel:
     def initial_data_status(self):
         counter = 0  # 计数器
         # 查询所有记录
-        cursors = self.collection.find()
+        cursors = self.collection.find().skip(self.kip)
         for data in cursors:
             # 大于初始数据网络的一条数据处理
             if counter >= self.k_no:
@@ -77,6 +78,7 @@ class CreateModel:
             if counter == self.k_no - 1:
                 # print("最后一条记录！！")
                 self.flag = self.initialize_linked_status(data)
+            print("service:", data.get("服务ID"))
             obj = self.create_class_obj(data)  # 创建对象
             self.list_network.append(obj)
             counter += 1  # 计数器
@@ -112,17 +114,24 @@ class CreateModel:
                         dict_relation = {"pre_id": iter_obj.get_id(), "relation": relation, "post_id": obj.get_id(),
                                          "pre_Class": iter_obj.__class__.__name__,
                                          "post_Class": obj.__class__.__name__, "pre_Activity": iter_obj.get_activity(),
-                                         "post_Activity": obj.get_activity()}
+                                         "post_Activity": obj.get_activity(),
+                                         "pre_service": iter_obj.get_service(), "pre_content": iter_obj.get_content(),
+                                         "pre_title": iter_obj.get_title(),
+                                         "post_service": obj.get_service(), "post_content": obj.get_content(),
+                                         "post_title": obj.get_title()
+                                         }
                         self.list_network_relation.append(dict_relation)
 
         # self.list_network.extend(self.list_network_relation)
         # 1.节点
+        print("节点：")
         if self.list_network:
             for i in range(len(self.list_network)):
                 print("i:", i, ", list_network:", self.list_network[i])
         else:
             print("list_network is empty!")
         # 2.联系
+        print("联系")
         if self.list_network_relation:
             for i in range(len(self.list_network_relation)):
                 print("i:", i, ", list_network:", self.list_network_relation[i])
@@ -149,8 +158,10 @@ class CreateModel:
         cursor = self.if_there_exp()
         if cursor:
             for i in cursor:
-                # print("i-:", i)
-                if i.get("stamp_from") <= timestamp <= i.get("stamp_to"):
+                # print("i-:", i, "timestamp:", timestamp, "from:", i.get("stamp_from"),
+                #       ", to:", i.get("stamp_to"))
+
+                if (i.get("stamp_to") is not None) and i.get("stamp_from") <= timestamp <= i.get("stamp_to"):
                     # print("i&:", i)
                     # print("initial pos:", i)
                     self.position.append(i)
@@ -196,7 +207,7 @@ class CreateModel:
         cursors = self.collection.find(no_cursor_timeout=True).skip(self.k_no)
         counter = 0  # 计数器
         for data in cursors:
-            # if counter > 30:
+            # if counter > 100:
             #     break
             counter += 1
             # print("data:", data)
@@ -279,7 +290,14 @@ class CreateModel:
                 dict_relation = {"pre_id": iter_obj.get_id(), "relation": relation, "post_id": obj.get_id(),
                                  "pre_Class": iter_obj.__class__.__name__,
                                  "post_Class": obj.__class__.__name__, "pre_Activity": iter_obj.get_activity(),
-                                 "post_Activity": obj.get_activity()}
+                                 "post_Activity": obj.get_activity(),
+                                 "pre_service": iter_obj.get_service(), "pre_title": iter_obj.get_title(),
+                                 "pre_content": iter_obj.get_content(),
+                                 "post_service": obj.get_service(), "post_title": obj.get_title(),
+                                 "post_content": obj.get_content()
+                                 }
+                if relation != "Update":
+                    print("relation:", dict_relation)
                 # 将每一个新联系加载到队列中
                 # print("新联系:", dict_relation)
                 list_rela.append(dict_relation)
@@ -508,7 +526,8 @@ class CreateModel:
                        "Webmasters", "Arqade", "Movies & TV", "Travel",
                        "Personal Productivity"):
             return "YL"
-        if service in ("blogs", "Blog", "Blogs", "blog", "Quora", "Pinboard"):
+        if service in ("blogs", "Blog", "Blogs", "blog", "Tumblr",
+                       "Quora", "Pinboard"):
             return "Blog"
         if service in ("Github", "Gitlib", "Bitbucket", "jessehouwing"):
             return "Git"
@@ -516,6 +535,8 @@ class CreateModel:
             return "Media"
         if service in ("Amazon", "mall"):
             return "EC"
+        if service in ("Behance", "dribbble"):
+            return "Design"
         return "others"
 
 # ----------------------------------------------------------------------------------------------------------
@@ -575,14 +596,16 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "data_status"  # 读取数据库名字
-    collection_name = "U08"  # 读取数据集合的名字
+    collection_name = "U09"  # 读取数据集合的名字
     net_db = "varied_net"  # 变化的个人数据网络-数据库
     # Part2: 创建初始个人数据网络,选取时间序列中前k条记录作为构建网络的基础结构
-    k_no = 50
+    k_no = 500
     # 所有的参数初始化，并建立类的对象
     # 文本相似度比率
-    ratio = 0.65
-    cm1 = CreateModel(db_name, collection_name, ip_address, k_no, ratio, net_db)
+    ratio = 0.4
+    # 跳跃多少条记录kip = 100
+    kip = 18000
+    cm1 = CreateModel(db_name, collection_name, ip_address, k_no, ratio, net_db, kip)
     cm1.initial_data_status()
     # 清空数据表格
     cm1.clear_all()

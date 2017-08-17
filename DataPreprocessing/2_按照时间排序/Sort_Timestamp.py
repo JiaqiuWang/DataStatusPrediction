@@ -136,7 +136,7 @@ def main_operation():
     """Part1: 初始化参数"""
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U08"  # 读取数据集合的名字
+    collection_name = "U11"  # 读取数据集合的名字
     flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
     piece = 1000  # 每份多少个记录
     new_db = "data_status"  # 待插入的新数据库

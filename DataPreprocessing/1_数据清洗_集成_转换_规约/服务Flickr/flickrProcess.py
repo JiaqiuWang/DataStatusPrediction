@@ -111,6 +111,15 @@ class DataProcess:
                     temp_keywords = dpt4.main(title)  # keywords是一个List结构
                     key_words += temp_keywords
                     print("keywords:", temp_keywords)
+                if j == "内容":
+                    element = element.replace("Idan Adar", "")
+                    element = element.replace("的", "")
+                    element = element.replace(' “@', "")
+                    content = element
+                    print(j, ":", content)
+                    temp_keywords = dpt4.main(element)   # keywords是一个List结构
+                    print("keywords:", temp_keywords)
+                    key_words = key_words + temp_keywords
                 if j == "content_time":
                     # 判断是否有空值
                     if str(data.iloc[i][j]) == "nan":
@@ -252,11 +261,11 @@ for case in Switch(v):
 
 def main_operation():
     """Part1: 初始化参数"""
-    file_path = 'data/照片服务.csv'  # 读取文件路径和文件名
+    file_path = '../../data/照片服务4.csv'  # 读取文件路径和文件名
     ip_address = "127.0.0.1"  # 主机IP地址
     db_name = "predictionData"  # 数据库名字
-    collection_name = "U03"  # 集合的名字
-    flag_insert = "1"  # 1代表写入数据库, 其他代表不输入数据库
+    collection_name = "U10"  # 集合的名字
+    flag_insert = "0"  # 1代表写入数据库, 其他代表不输入数据库
     dp1 = DataProcess(file_path, db_name, collection_name,
                       ip_address, flag_insert)
     dp1.read_file()

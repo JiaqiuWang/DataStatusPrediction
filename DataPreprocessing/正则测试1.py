@@ -1,9 +1,9 @@
 import re
 
-str1 = "Uploaded on Mar 11, 2009"
+str1 = "Sun 03 02_ 2008"
 str2 = "asdfad4554"
 
-matchObj = re.search(r'(\d{10})', str1, re.M | re.I)
+matchObj = re.search(r'(\d{1,2} \d{1,2}.*)', str1, re.M | re.I)
 
 if matchObj:
     print("matchObj.group() : ", matchObj.group(0))

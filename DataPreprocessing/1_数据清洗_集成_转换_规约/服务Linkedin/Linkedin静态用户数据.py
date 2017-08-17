@@ -87,8 +87,8 @@ class CreateModel:
     def insert_db(self):
         # 获取集合 --普通
         # collection = self.db.get_collection(self.collection_name)
-        # date_from = "2007-06"
-        # date_to = "2015-12"
+        # date_from = "2015-06"
+        # date_to = "2016-06"
         # timestamp_from = self.date_transform_to_timestamp(date_from)
         # timestamp_to = self.date_transform_to_timestamp(date_to)
         # # 时间戳转换成标准的字符串时间
@@ -97,8 +97,8 @@ class CreateModel:
         # duration = timestamp_to - timestamp_from
         # _id = self.get_next_id(self.db)
         # input_text = {"_id": _id, "uid": self.uid, "type": "Work",
-        #               "department": "AKQA",
-        #               "position": "Web Developer",
+        #               "department": "Rockfish",
+        #               "position": "Senior Design Consultant",
         #               "from": date_from, "to": date_to,
         #               "stamp_from": timestamp_from,
         #               "stamp_to": timestamp_to, "duration": duration,
@@ -108,14 +108,14 @@ class CreateModel:
 
         # 获取集合 ---至今的
         collection = self.db.get_collection(self.collection_name)
-        date_from = "2017-01"
+        date_from = "2016-07"
         timestamp_from = self.date_transform_to_timestamp(date_from)
         # 时间戳转换成标准的字符串时间
         date_from = self.get_datetime(timestamp_from)
         _id = self.get_next_id(self.db)
         input_text = {"_id": _id, "uid": self.uid, "type": "Work",
-                      "department": "Transform UK",
-                      "position": "Associate",
+                      "department": "GE Aviation",
+                      "position": "UI/UX Consultant",
                       "from": date_from, "to": "now",
                       "stamp_from": timestamp_from,
                       }
@@ -236,7 +236,7 @@ def main_operation():
     db_name = "data_status"  # 读取数据库名字
     collection_name = "exp"  # 读取用户静态经历集合
     flag = 1  # 标志位，1：插入数据，否则不插入
-    uid = "U08"
+    uid = "U09"
     # Part2: 插入数据库
     cm1 = CreateModel(db_name, collection_name, ip_address, uid, flag)
     cm1.insert_db()
